@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AssetRepository extends JpaRepository<AssetVo, Long> {
-    public List<AssetVo> findByWrms_asset_code(String wrms_asset_code);
+    List<AssetVo> findByWrms_asset_code(String wrms_asset_code);
 }

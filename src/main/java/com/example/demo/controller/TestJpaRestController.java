@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.repository.AssetRepository;
 import com.example.demo.service.AssetService;
 import com.example.demo.vo.AssetVo;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("assetTest")
+@RequestMapping("asset")
+@RequiredArgsConstructor
 public class TestJpaRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final AssetRepository assetRepository;
     @Autowired
     AssetService assetService;
 
-    @GetMapping(value="/{wrms_asset_code}, produces = { MediaType.APPLICATION_JSON_VALUE }")
-    public ResponseEntity<AssetVo> getAsset(@PathVariable("wrms_asset_code") String wrms_asset_code){
-        List<AssetVo> asset = assetService.findByWrmsAssetCode(wrms_asset_code);
-        return new ResponseEntity<AssetVo>(asset.get(1), HttpStatus.OK);
+    @GetMapping("asset/{wrms_asset_code}")
+    public AssetService getAsset(@PathVariable String wrms_asset_code){
+        return (AssetService) assetRepository.findByWrms_asset_code(wrms_asset_code);
     }
 }
