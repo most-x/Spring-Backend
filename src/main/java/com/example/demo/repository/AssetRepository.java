@@ -1,12 +1,12 @@
 package com.example.demo.repository;
 
-import com.example.demo.vo.AssetVo;
+import com.example.demo.entity.Asset;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface AssetRepository extends JpaRepository<AssetVo, Long> {
-    List<AssetVo> findByWrms_asset_code(String wrms_asset_code);
+public interface AssetRepository extends JpaRepository<Asset, Long> {
+    Optional<Asset> findByWrmsAssetCode(String wrms_asset_code);
 }

@@ -1,8 +1,11 @@
 package com.example.demo.service;
+import com.example.demo.entity.Asset;
 import com.example.demo.repository.AssetRepository;
-import com.example.demo.vo.AssetVo;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,13 +18,13 @@ public class AssetService {
     @Autowired
     private AssetRepository assetRepository;
 
-    public List<AssetVo> findAll(){
-        List<AssetVo> assets = new ArrayList<>();
-        assetRepository.findAll().forEach(e -> assets.add(e));
-        return assets;
+    public List<Asset> findAll(){
+        return assetRepository.findAll();
     }
 
-    public List<AssetVo> findByWrmsAssetCode(String wrms_asset_code){
-        return assetRepository.findByWrms_asset_code(wrms_asset_code);
+    public Asset findByWrmsAssetCode(String wrms_asset_code){
+        return assetRepository.findByWrmsAssetCode(wrms_asset_code).orElseThrow(()->{
+            return new EntityNotFoundException("자산코드로 등록된 자산이 없습니다.");
+        });
     }
 }
