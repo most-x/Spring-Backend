@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class JasyptConfig {
 
-    @Value("${jasypt.encryptor.password}")
+    @Value("${JASYPT_PASSWORD}")
     private String encryptKey;
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
