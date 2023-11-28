@@ -20,6 +20,7 @@ public class TestJpaRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AssetService assetService;
 
+    @Operation(summary = "전체 자산 조회", description = "전체 자산을 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets")
     public Response<?> findAll(){
