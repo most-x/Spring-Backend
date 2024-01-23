@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.mostx.asset.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +21,6 @@ public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sno;
-
-    @OneToMany(mappedBy = "assetSno")
-    @OrderBy("depreciationDate desc")
-    private List<AssetDepreciation> assetDepreciation;
 
     @Column(nullable = false, unique = true, name="wrms_asset_code")
     private String wrmsAssetCode;
@@ -67,6 +65,34 @@ public class Asset {
     private String registName;
 
     @Column(nullable = true, name="initial_start_date")
-    private Date initialStartDate;
+    private LocalDate initialStartDate;
+
+    @Column(nullable = true, name="sales_recognition_amount")
+    private Integer salesRecognitionAmount;
+
+    @Column(nullable = true, name="sale_date")
+    private LocalDate saleDate;
+
+    @Column(nullable = true, name="sale_amount")
+    private Integer saleAmount;
+
+    @Column(nullable = true, name="disposal_date")
+    private LocalDate disposalDate;
+
+    @Column(nullable = true, name="disposal_amount")
+    private Integer disposalAmount;
+
+    @Column(nullable = true, name="depreciation_current")
+    private Integer depreciationCurrent;
+
+    @Column(nullable = true, name="depreciation_totalprice")
+    private Integer depreciationTotalprice;
+
+    @Column(nullable = true, name="book_value")
+    private Integer bookValue;
+
+    @OneToMany(mappedBy = "assetSno", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("depreciationDate desc")
+    private List<AssetDepreciation> assetDepreciation;
 }
 

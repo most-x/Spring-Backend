@@ -1,12 +1,13 @@
-package com.example.demo.entity;
+package com.mostx.asset.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity(name = "mostx_AssetDepreciation")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "sno")
-class AssetDepreciation {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Getter @Setter
+public class AssetDepreciation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sno;
@@ -33,5 +36,5 @@ class AssetDepreciation {
     private int bookValue;
 
     @Column(nullable = false, name = "depreciation_date")
-    private Date depreciationDate;
+    private LocalDate depreciationDate;
 }

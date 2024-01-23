@@ -1,4 +1,4 @@
-package com.example.demo.response;
+package com.mostx.asset.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
