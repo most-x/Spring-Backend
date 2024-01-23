@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/assets")
@@ -49,7 +46,7 @@ public class AssetDepreciationController {
     @Parameter(name="wrmsAssetCode", description = "WRMS 자산코드", example = "TEST000000001")
     public Response<?> findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
         Asset asset = assetService.findAssetCode(wrmsAssetCode);
-        return new Response<>("true", "조회 성공", assetService.findAssetCode(wrmsAssetCode));
+        return new Response<>("true", "조회 성공", asset);
     }
 
     @GetMapping("/assets/asset-search")
