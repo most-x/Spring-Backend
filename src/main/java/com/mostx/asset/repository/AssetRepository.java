@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface AssetRepository extends JpaRepository<Asset, Long> {
     Optional<Asset> findByWrmsAssetCode(String wrms_asset_code);
+
+    Optional<Asset> findBySno(Long sno);
 }

@@ -127,6 +127,14 @@ public class AssetService {
         return assetPage.map(this::convertToDto);
     }
 
+    public AssetDTO findAsset(Long sno) {
+        Asset idAsset = assetRepository.findBySno(sno).orElseThrow(() -> {
+            return new IllegalArgumentException("Asset ID를 찾을 수 없습니다.");
+        });
+
+        return convertToDto(idAsset);
+    }
+
     public Asset findAssetCode(String wrmsAssetCode){
         return assetRepository.findByWrmsAssetCode(wrmsAssetCode).orElseThrow(()->{
             return new EntityNotFoundException("자산코드로 등록된 자산이 없습니다.");

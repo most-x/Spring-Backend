@@ -40,6 +40,13 @@ public class AssetDepreciationController {
         return new Response<>("true", "조회 성공", assetPage);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public Response<?> findAsset(@PathVariable("id") Long id){
+        AssetDTO idAsset = assetService.findAsset(id);
+        return new Response<>("true", "조회 성공", idAsset);
+    }
+
     @Operation(summary = "자산번호 검색", description = "WRMS에 등록된 자산코드로 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
