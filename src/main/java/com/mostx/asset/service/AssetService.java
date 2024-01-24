@@ -1,13 +1,18 @@
 package com.mostx.asset.service;
 import com.mostx.asset.dto.AssetDTO;
 import com.mostx.asset.dto.AssetDepreciationDTO;
+import com.mostx.asset.dto.AssetDepreciationSearchDTO;
+import com.mostx.asset.dto.AssetResearchDTO;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.mostx.asset.entity.QAsset.asset;
+import static com.mostx.asset.entity.QAssetDepreciation.assetDepreciation;
 
 @Service
 @RequiredArgsConstructor
@@ -141,56 +147,78 @@ public class AssetService {
         });
     }
 
-    public List<Asset> findSearchAsset(String wrmsAssetCode, String wrmsItemCode,
-                                       String ilsangProductCode, String serialNumber, String productName,
-                                       String assetStatus, String assetUsage, Integer startPrice, Integer endPrice,
-                                       LocalDate initialStartDate, String warehouseNumber, Pageable pageable) {
-        return jpaQueryFactory
+    public Page<AssetDTO> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto, Pageable pageable) {
+        List<Asset> assetDepreciationSearchDtoList = jpaQueryFactory
                 .selectFrom(asset)
-                .where(wrmsAssetCodeEq(wrmsAssetCode), wrmsItemCodeEq(wrmsItemCode),
-                        ilsangProductCodeEq(ilsangProductCode), serialNumberEq(serialNumber), productNameEq(productName),
-                        assetStatusEq(assetStatus), assetUsageEq(assetUsage), priceBetween(startPrice, endPrice),
-                        initialStartDateEq(initialStartDate), warehouseNumberEq(warehouseNumber))
+                .where(assetSearch(assetDepreciationSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDepreciationSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetDepreciationSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetDepreciationSearchDto.getIlsangProductCode(), asset.ilsangProductCode),
+                        assetSearch(assetDepreciationSearchDto.getProductName(), asset.productName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        Long count = jpaQueryFactory
+                .select(asset.count())
+                .from(asset)
+                .where(assetSearch(assetDepreciationSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDepreciationSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetDepreciationSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetDepreciationSearchDto.getIlsangProductCode(), asset.ilsangProductCode),
+                        assetSearch(assetDepreciationSearchDto.getProductName(), asset.productName))
+                .fetchOne();
+
+        List<AssetDTO> assetDtoList = assetDepreciationSearchDtoList.stream().map(this::convertToDto).toList();
+
+        return new PageImpl<>(assetDtoList, pageable, count);
     }
 
-    private BooleanExpression wrmsAssetCodeEq(String wrmsAssetCode) {
-        return StringUtils.hasText(wrmsAssetCode) ? asset.wrmsAssetCode.contains(wrmsAssetCode) : null;
+    public Page<AssetDTO> findSearchAsset(AssetResearchDTO assetResearchDto, Pageable pageable) {
+        List<Asset> searchAsset = jpaQueryFactory
+                .selectFrom(asset)
+                .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetResearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetResearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetResearchDto.getProductName(), asset.productName),
+                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getStartPrice(), assetResearchDto.getEndPrice()),
+                        initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
+                        currentMonthBetween(assetResearchDto.getPriceType()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<AssetDTO> resultDto = searchAsset.stream().map(this::convertToDto).toList();
+
+        return new PageImpl<>(resultDto, pageable, searchAsset.size());
     }
 
-    private BooleanExpression wrmsItemCodeEq(String wrmsItemCode) {
-        return StringUtils.hasText(wrmsItemCode) ? asset.wrmsItemCode.contains(wrmsItemCode) : null;
+    private BooleanExpression assetSearch(String searchAssetValue, StringPath asset) {
+        return StringUtils.hasText(searchAssetValue) ? asset.contains(searchAssetValue) : null;
     }
 
-    private BooleanExpression ilsangProductCodeEq(String ilsangProdocuCode) {
-        return StringUtils.hasText(ilsangProdocuCode) ? asset.ilsangProductCode.contains(ilsangProdocuCode) : null;
-    }
+    /**
+     * @param priceType  - vatPlus(발주단가 VAT+), vatMinus(발주단가 VAT-), depreCost(감가상각비(당월)), accumDepre(감가상각 누계액), bookValue(장부가액)
+     * @param startPrice
+     * @param endPrice
+     * @return
+     */
+    private BooleanExpression priceBetween(String priceType, Integer startPrice, Integer endPrice) {
+        NumberPath<Integer> assetType;
 
-    private BooleanExpression serialNumberEq(String serialNumber) {
-        return StringUtils.hasText(serialNumber) ? asset.serialNumber.contains(serialNumber) : null;
-    }
+        switch (priceType != null ? priceType : "NULL") {
+            case "vatPlus" -> assetType = asset.totalPrice;
+            case "vatMinus" -> assetType = asset.supplyPrice;
+            case "depreCost" -> assetType = assetDepreciation.depreciationCost;
+            case "accumDepre" -> assetType = assetDepreciation.accumlatedDepreciation;
+            case "bookValue" -> assetType = assetDepreciation.bookValue;
+            default -> assetType = null;
+        }
 
-    private BooleanExpression productNameEq(String productName) {
-        return StringUtils.hasText(productName) ? asset.productName.contains(productName) : null;
-    }
-
-    private BooleanExpression assetStatusEq(String assetStatus) {
-        return StringUtils.hasText(assetStatus) ? asset.assetStatus.contains(assetStatus) : null;
-    }
-
-    private BooleanExpression assetUsageEq(String assetUsage) {
-        return StringUtils.hasText(assetUsage) ? asset.assetUsage.contains(assetUsage) : null;
-    }
-
-    private BooleanExpression priceBetween(Integer startPrice, Integer endPrice) {
-        if(startPrice != null && endPrice != null) {
-            return asset.totalPrice.between(startPrice, endPrice);
-        } else if(startPrice != null) {
-            return asset.totalPrice.goe(startPrice);
-        } else if(endPrice != null) {
-            return asset.totalPrice.loe(endPrice);
+        if(assetType != null) {
+            if (startPrice != null && endPrice != null) {
+                return assetType.between(startPrice, endPrice);
+            } else if (startPrice != null) {
+                return assetType.goe(startPrice);
+            } else if (endPrice != null) {
+                return assetType.loe(endPrice);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
@@ -200,7 +228,20 @@ public class AssetService {
         return initialStartDate != null ? asset.initialStartDate.eq(initialStartDate) : null;
     }
 
-    private BooleanExpression warehouseNumberEq(String warehouseNumber) {
-        return warehouseNumber != null ? asset.warehouseNumber.eq(warehouseNumber) : null;
+    /**
+     * 감가상각 데이터는 당월을 기준으로 조회 따라서 startDay between today (Ex. 2023-12-01 ~ 2023-12-15)
+     * today = 현재날짜
+     * startDay = 당월 1일 세팅
+     * @return
+     */
+    private BooleanExpression currentMonthBetween(String priceType) {
+        if(priceType != null) {
+            LocalDate today = LocalDate.now();
+            LocalDate startDay = today.withDayOfMonth(1);
+
+            return assetDepreciation.depreciationDate.between(startDay, today);
+        } else {
+            return null;
+        }
     }
 }

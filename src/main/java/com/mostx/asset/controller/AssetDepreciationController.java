@@ -1,6 +1,8 @@
 package com.mostx.asset.controller;
 
 import com.mostx.asset.dto.AssetDTO;
+import com.mostx.asset.dto.AssetDepreciationSearchDTO;
+import com.mostx.asset.dto.AssetResearchDTO;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.response.Response;
 import com.mostx.asset.service.AssetService;
@@ -47,6 +49,14 @@ public class AssetDepreciationController {
         return new Response<>("true", "조회 성공", idAsset);
     }
 
+    @Operation(summary = "감가상각 자산검색", description = "검색내용과 일치하는 자산의 리스트를 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/asset-depreciation-search")
+    public Response<?> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
+        Page<AssetDTO> assetDepreciationSearchDto1 = assetService.findAssetDepreciationSearch(assetDepreciationSearchDto, pageable);
+        return new Response<>("true", "조회 성공", assetDepreciationSearchDto1);
+    }
+
     @Operation(summary = "자산번호 검색", description = "WRMS에 등록된 자산코드로 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
@@ -56,14 +66,9 @@ public class AssetDepreciationController {
         return new Response<>("true", "조회 성공", asset);
     }
 
-    @GetMapping("/assets/asset-search")
-    public Response<?> findSearchAsset(@RequestParam(required = false) String wrmsAssetCode, @RequestParam(required = false) String wrmsItemCode, @RequestParam(required = false) String ilsangProductCode,
-                                       @RequestParam(required = false) String serialNumber, @RequestParam(required = false) String productName,
-                                       @RequestParam(required = false) String assetStatus, @RequestParam(required = false) String assetUsage, @RequestParam(required = false) Integer startPrice,
-                                       @RequestParam(required = false) Integer endPrice, @RequestParam(required = false) LocalDate initialStartDate, @RequestParam(required = false) String warehouseNumber,
-                                       Pageable pageable) {
-
-        return new Response<>("true", "조회 성공", assetService.findSearchAsset(wrmsAssetCode, wrmsItemCode, ilsangProductCode, serialNumber, productName,
-                assetStatus, assetUsage, startPrice, endPrice, initialStartDate, warehouseNumber, pageable));
+    @GetMapping("/asset-search")
+    public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(size = 10) Pageable pageable) {
+        Page<AssetDTO> researchDto = assetService.findSearchAsset(assetResearchDto, pageable);
+        return new Response<>("true", "조회 성공", researchDto);
     }
 }
