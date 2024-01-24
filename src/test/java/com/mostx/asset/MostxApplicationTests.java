@@ -3,7 +3,7 @@ package com.mostx.asset;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(properties = "logging.config=classpath:logback-spring.xml")
+@SpringBootTest
 class MostxApplicationTests {
 
 	@Test
