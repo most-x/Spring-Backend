@@ -3,7 +3,7 @@ package com.mostx.asset;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = MostxApplicationTests.class)
+@SpringBootTest(properties = "spring.profiles.active:dev")
 class MostxApplicationTests {
 
 	@Test
