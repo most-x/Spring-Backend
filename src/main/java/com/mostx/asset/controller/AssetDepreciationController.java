@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +65,14 @@ public class AssetDepreciationController {
     public Response<?> findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
         Asset asset = assetService.findAssetCode(wrmsAssetCode);
         return new Response<>("true", "조회 성공", asset);
+    }
+
+    @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/asset-regist")
+    public Response<?> register(@RequestBody @Valid AssetDTO assetDto){
+        AssetDTO savedAsset = assetService.register(assetDto);
+        return new Response<>("true", "등록 성공", savedAsset);
     }
 
     @GetMapping("/asset-search")

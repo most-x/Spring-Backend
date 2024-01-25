@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -125,6 +126,14 @@ public class AssetService {
         assetDto.setAssetDepreciationDTOs(assetDepreciationDtos);
 
         return assetDto;
+    }
+
+    @Transactional
+    public AssetDTO register(AssetDTO assetDto) {
+        Asset assetRegist = convertToEntity(assetDto);
+        Asset savedAssetRegist = assetRepository.save(assetRegist);
+
+        return convertToDto(savedAssetRegist);
     }
 
     public Page<AssetDTO> findAll(Pageable pageable) {
