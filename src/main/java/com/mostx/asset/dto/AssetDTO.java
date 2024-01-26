@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -98,4 +99,8 @@ public class AssetDTO {
     private Integer bookValue;
 
     private List<AssetDepreciationDTO> assetDepreciationDTOs;
+
+    public Integer getUsefulLife() {
+        return Objects.requireNonNullElse(usefulLife, 0);
+    }
 }
