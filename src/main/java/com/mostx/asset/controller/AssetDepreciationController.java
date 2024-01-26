@@ -70,7 +70,7 @@ public class AssetDepreciationController {
     @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/asset-regist")
-    public Response<?> register(@RequestBody AssetDTO assetDto){
+    public Response<?> register(@RequestBody @Valid AssetDTO assetDto){
         AssetDTO savedAsset = assetService.register(assetDto);
         return new Response<>("true", "등록 성공", savedAsset);
     }
