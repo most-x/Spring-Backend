@@ -1,8 +1,5 @@
 package com.mostx.asset.service;
-import com.mostx.asset.dto.AssetDTO;
-import com.mostx.asset.dto.AssetDepreciationDTO;
-import com.mostx.asset.dto.AssetDepreciationSearchDTO;
-import com.mostx.asset.dto.AssetResearchDTO;
+import com.mostx.asset.dto.*;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -134,6 +131,22 @@ public class AssetService {
         Asset savedAssetRegist = assetRepository.save(assetRegist);
 
         return convertToDto(savedAssetRegist);
+    }
+
+    public AssetDTO update(Long id, AssetRequestDTO assetRequestDto) {
+        Asset assetUpdate = assetRepository.findBySno(id).orElseThrow(() -> {
+            return new NullPointerException("해당 자산이 존재하지 않습니다.");
+        });
+
+        if(assetRequestDto.getSaleDate() != null) assetUpdate.setSaleDate(assetRequestDto.getSaleDate());
+        if(assetRequestDto.getSaleAmount() != null) assetUpdate.setSaleAmount(assetRequestDto.getSaleAmount());
+        if(assetRequestDto.getSalesRecognitionAmount() != null) assetUpdate.setSalesRecognitionAmount(assetRequestDto.getSalesRecognitionAmount());
+        if(assetRequestDto.getDisposalDate() != null) assetUpdate.setDisposalDate(assetRequestDto.getDisposalDate());
+        if(assetRequestDto.getDisposalAmount() != null) assetUpdate.setDisposalAmount(assetRequestDto.getDisposalAmount());
+
+        Asset savedAssetUpdate = assetRepository.save(assetUpdate);
+
+        return convertToDto(savedAssetUpdate);
     }
 
     public Page<AssetDTO> findAll(Pageable pageable) {

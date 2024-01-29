@@ -2,6 +2,7 @@ package com.mostx.asset.controller;
 
 import com.mostx.asset.dto.AssetDTO;
 import com.mostx.asset.dto.AssetDepreciationSearchDTO;
+import com.mostx.asset.dto.AssetRequestDTO;
 import com.mostx.asset.dto.AssetResearchDTO;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.response.Response;
@@ -73,6 +74,14 @@ public class AssetDepreciationController {
     public Response<?> register(@RequestBody @Valid AssetDTO assetDto){
         AssetDTO savedAsset = assetService.register(assetDto);
         return new Response<>("true", "등록 성공", savedAsset);
+    }
+
+    @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/asset-update/{id}")
+    public Response<?> update(@PathVariable Long id, @RequestBody @Valid AssetRequestDTO assetRequestDto) {
+        AssetDTO updateAsset = assetService.update(id, assetRequestDto);
+        return new Response<>("true", "수정 성공", updateAsset);
     }
 
     @GetMapping("/asset-search")
