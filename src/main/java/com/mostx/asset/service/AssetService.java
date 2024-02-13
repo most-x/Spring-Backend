@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import static com.mostx.asset.entity.QAssetDepreciation.assetDepreciation;
 public class AssetService {
     private final AssetRepository assetRepository;
     private final JPAQueryFactory jpaQueryFactory;
+    private final EntityManager em;
 
     private Asset convertToEntity(AssetDTO assetDto) {
         Asset asset = new Asset();
@@ -147,6 +149,19 @@ public class AssetService {
         Asset savedAssetUpdate = assetRepository.save(assetUpdate);
 
         return convertToDto(savedAssetUpdate);
+    }
+
+    @Transactional
+    public void update(Long id, int depreciationCost, int depreciationTotalprice, int bookValue) {
+        Asset asset1 = em.find(Asset.class, id);
+
+        asset1.setDepreciationCurrent(depreciationCost);
+        asset1.setDepreciationTotalprice(depreciationTotalprice);
+        asset1.setBookValue(bookValue);
+
+        em.persist(asset1);
+
+        em.flush();
     }
 
     public Page<AssetDTO> findAll(Pageable pageable) {
