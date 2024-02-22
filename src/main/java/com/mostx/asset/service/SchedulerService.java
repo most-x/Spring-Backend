@@ -17,10 +17,10 @@ public class SchedulerService {
     private final AssetService assetService;
     private final AssetDepreciationService assetDepreciationService;
 
-    @Scheduled(cron = "0 0 16 13 * *")
+    @Scheduled(cron = "0 0 16 23 * *")
     public void run() {
         List<Asset> assets = scheduleRepository.findAll();
-        AssetDepreciation assetDepreciation;
+        List<AssetDepreciation> assetDepreciation;
         int depreciationCost, accumlatedDepreciation, bookValue;
 
         for (Asset asset : assets) {
@@ -32,12 +32,21 @@ public class SchedulerService {
                     continue;
                 }
                 assetDepreciation = scheduleRepository.findDepreciation(asset.getSno());
-                accumlatedDepreciation = assetDepreciation.getAccumlatedDepreciation() + depreciationCost;
-                bookValue = assetDepreciation.getBookValue() - depreciationCost;
 
-                if(bookValue < 0 || assetDepreciation.getBookValue() == asset.getTotalPrice()){
-                    System.out.println("해당 자산에는 더이상 감가상각을 진행할 수 없습니다. 자산번호 : " + asset.getWrmsAssetCode());
-                    continue;
+                // if : 감가상각진행현황이 없을 경우 신규 등록
+                // else : 감가상각진행현황이 있을 경우 추가 등록
+                if (assetDepreciation.isEmpty()) {
+                    accumlatedDepreciation = depreciationCost;
+                    bookValue = asset.getTotalPrice();
+                } else {
+                    accumlatedDepreciation = assetDepreciation.get(0).getAccumlatedDepreciation() + depreciationCost;
+                    bookValue = assetDepreciation.get(0).getBookValue() - depreciationCost;
+
+                    // 자산의 장부가액이 0원이거나 감가상각액이 자산의 총 금액과 같을 경우 더이상 감가진행 불가능
+                    if(bookValue < 0 || assetDepreciation.get(0).getAccumlatedDepreciation() == asset.getTotalPrice()){
+                        System.out.println("해당 자산에는 더이상 감가상각을 진행할 수 없습니다. 자산번호 : " + asset.getWrmsAssetCode());
+                        continue;
+                    }
                 }
 
                 AssetDepreciation assetDepreciation1 = new AssetDepreciation();

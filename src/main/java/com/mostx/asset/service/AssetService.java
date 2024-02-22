@@ -85,6 +85,20 @@ public class AssetService {
         assetDto.setDepreciationTotalprice(asset.getDepreciationTotalprice());
         assetDto.setBookValue(asset.getBookValue());
 
+        List<AssetDepreciationDTO> assetDepreciationDtos = asset.getAssetDepreciation().stream()
+                .map(assetDepreciation -> {
+                    AssetDepreciationDTO assetDepreciationDto = new AssetDepreciationDTO();
+                    assetDepreciationDto.setAssetCodeSno(assetDepreciationDto.assetEntity(asset));
+                    assetDepreciationDto.setAccumlatedDepreciation(assetDepreciation.getAccumlatedDepreciation());
+                    assetDepreciationDto.setDepreciationCost(assetDepreciation.getDepreciationCost());
+                    assetDepreciationDto.setDepreciationDate(assetDepreciation.getDepreciationDate());
+                    assetDepreciationDto.setBookValue(assetDepreciation.getBookValue());
+                    return assetDepreciationDto;
+                })
+                .collect(Collectors.toList());
+
+        assetDto.setAssetDepreciationDTOs(assetDepreciationDtos);
+
         return assetDto;
     }
 

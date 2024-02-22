@@ -19,12 +19,12 @@ public class ScheduleRepository {
                 .getResultList();
     }
 
-    public AssetDepreciation findDepreciation(Long assetId) {
+    public List<AssetDepreciation> findDepreciation(Long assetId) {
         return em.createQuery(
                         "select d from mostx_AssetDepreciation d" +
                                 " where d.assetSno.sno= :assetId" +
                                 " order by depreciationDate desc, accumlatedDepreciation desc limit 1", AssetDepreciation.class)
                 .setParameter("assetId", assetId)
-                .getSingleResult();
+                .getResultList();
     }
 }
