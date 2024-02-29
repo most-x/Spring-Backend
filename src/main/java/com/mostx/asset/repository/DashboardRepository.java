@@ -56,15 +56,15 @@ public class DashboardRepository {
         List<Map<String, Object>> resultMap = new ArrayList<>();
         for (DashboardDto list : result) {
             Map<String, Object> row = new LinkedHashMap<>();
-            row.put("총 자산", list.getTotalAsset());
-            row.put("정상", list.getNormalAsset());
-            row.put("매각", list.getSaleAsset());
-            row.put("폐기", list.getDisposeAsset());
-            row.put("개시", list.getStartAsset());
-            row.put("미개시", list.getNonStartAsset());
-            row.put("총 금액", list.getTotalPrice());
-            row.put("장부가액", list.getBookValueTotal());
-            row.put("누계액", sum);
+            row.put("totalAsset", list.getTotalAsset());
+            row.put("assetNormal", list.getNormalAsset());
+            row.put("assetSale", list.getSaleAsset());
+            row.put("assetDispose", list.getDisposeAsset());
+            row.put("assetStart", list.getStartAsset());
+            row.put("assetNonStart", list.getNonStartAsset());
+            row.put("totalPriceAsset", list.getTotalPrice());
+            row.put("bookValueAsset", list.getBookValueTotal());
+            row.put("sumDepreciationAsset", sum);
             resultMap.add(row);
         }
 
