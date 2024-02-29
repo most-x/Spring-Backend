@@ -28,7 +28,7 @@ public class SwaggerConfig {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
+                .components(new Components().addSecuritySchemes("mostxAuthCon", securityScheme))
                 .security(Arrays.asList(securityRequirement));
     }
 
