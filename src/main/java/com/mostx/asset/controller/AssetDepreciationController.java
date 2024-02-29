@@ -5,6 +5,7 @@ import com.mostx.asset.dto.AssetDepreciationSearchDTO;
 import com.mostx.asset.dto.AssetRequestDTO;
 import com.mostx.asset.dto.AssetResearchDTO;
 import com.mostx.asset.entity.Asset;
+import com.mostx.asset.repository.DashboardRepository;
 import com.mostx.asset.response.Response;
 import com.mostx.asset.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/assets")
@@ -30,6 +33,15 @@ import java.time.LocalDate;
 @Tag(name = "자산감가상각", description = "자산감가상각 API")
 public class AssetDepreciationController {
     private final AssetService assetService;
+    private final DashboardRepository dashboardRepository;
+
+    // Asset DashBoard
+    @Operation(summary = "대시보드", description = "대시보드 표기정보")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/dashboard")
+    public List<Map<String, Object>> dashBoard() {
+        return dashboardRepository.findDashboard();
+    }
 
     @Operation(summary = "전체 자산 조회", description = "자산을 전체 조회한다.")
     @ResponseStatus(HttpStatus.OK)
