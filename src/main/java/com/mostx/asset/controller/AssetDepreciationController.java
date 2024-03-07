@@ -7,6 +7,7 @@ import com.mostx.asset.dto.AssetResearchDTO;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.DashboardRepository;
 import com.mostx.asset.response.Response;
+import com.mostx.asset.response.ResponsePageInfo;
 import com.mostx.asset.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,7 +24,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -52,16 +52,15 @@ public class AssetDepreciationController {
                     content = {@Content(schema = @Schema(implementation = AssetDTO.class))}),
             @ApiResponse(responseCode = "404", description = "자산정보가 존재하지 않습니다."),
     })
-    public Response<?> findAll(@PageableDefault(size = 10) Pageable pageable){
-        Page<AssetDTO> assetPage = assetService.findAll(pageable);
-        return new Response<>("true", "조회 성공", assetPage);
+    public ResponsePageInfo findAll(int page, int size){
+        return assetService.findAll(page, size);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Response<?> findAsset(@PathVariable("id") Long id){
         AssetDTO idAsset = assetService.findAsset(id);
-        return new Response<>("true", "조회 성공", idAsset);
+        return new Response<>(idAsset);
     }
 
     @Operation(summary = "감가상각 자산검색", description = "검색내용과 일치하는 자산의 리스트를 조회한다.")
@@ -69,7 +68,7 @@ public class AssetDepreciationController {
     @GetMapping("/asset-depreciation-search")
     public Response<?> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
         Page<AssetDTO> assetDepreciationSearchDto1 = assetService.findAssetDepreciationSearch(assetDepreciationSearchDto, pageable);
-        return new Response<>("true", "조회 성공", assetDepreciationSearchDto1);
+        return new Response<>(assetDepreciationSearchDto1);
     }
 
     @Operation(summary = "자산번호 검색", description = "WRMS에 등록된 자산코드로 조회한다.")
@@ -78,7 +77,7 @@ public class AssetDepreciationController {
     @Parameter(name="wrmsAssetCode", description = "WRMS 자산코드", example = "TEST000000001")
     public Response<?> findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
         Asset asset = assetService.findAssetCode(wrmsAssetCode);
-        return new Response<>("true", "조회 성공", asset);
+        return new Response<>(asset);
     }
 
     @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
@@ -86,7 +85,7 @@ public class AssetDepreciationController {
     @PostMapping("/asset-regist")
     public Response<?> register(@RequestBody @Valid AssetDTO assetDto){
         AssetDTO savedAsset = assetService.register(assetDto);
-        return new Response<>("true", "등록 성공", savedAsset);
+        return new Response<>(savedAsset);
     }
 
     @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
@@ -94,12 +93,12 @@ public class AssetDepreciationController {
     @PatchMapping("/asset-update/{id}")
     public Response<?> update(@PathVariable Long id, @RequestBody @Valid AssetRequestDTO assetRequestDto) {
         AssetDTO updateAsset = assetService.update(id, assetRequestDto);
-        return new Response<>("true", "수정 성공", updateAsset);
+        return new Response<>(updateAsset);
     }
 
     @GetMapping("/asset-search")
     public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(size = 10) Pageable pageable) {
         Page<AssetDTO> researchDto = assetService.findSearchAsset(assetResearchDto, pageable);
-        return new Response<>("true", "조회 성공", researchDto);
+        return new Response<>(researchDto);
     }
 }

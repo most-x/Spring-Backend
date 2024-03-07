@@ -1,6 +1,7 @@
 package com.mostx.asset.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -98,7 +99,8 @@ public class AssetDTO {
     @Schema(description = "장부가액")
     private Integer bookValue;
 
-    private List<AssetDepreciationDTO> assetDepreciationDTOs;
+    @Transient
+    private Long no;
 
     public Integer getUsefulLife() {
         return Objects.requireNonNullElse(usefulLife, 0);

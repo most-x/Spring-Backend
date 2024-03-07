@@ -32,6 +32,7 @@ dependencies {
 	implementation 'commons-fileupload:commons-fileupload:1.5'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+	implementation 'org.modelmapper:modelmapper:3.2.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
 	testImplementation 'junit:junit:4.13.1'

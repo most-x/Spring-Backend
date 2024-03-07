@@ -2,6 +2,7 @@ package com.mostx.asset.service;
 import com.mostx.asset.dto.*;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
+import com.mostx.asset.response.ResponsePageInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
@@ -10,8 +11,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,6 +32,8 @@ public class AssetService {
     private final AssetRepository assetRepository;
     private final JPAQueryFactory jpaQueryFactory;
     private final EntityManager em;
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     private Asset convertToEntity(AssetDTO assetDto) {
         Asset asset = new Asset();
@@ -85,60 +90,13 @@ public class AssetService {
         assetDto.setDepreciationTotalprice(asset.getDepreciationTotalprice());
         assetDto.setBookValue(asset.getBookValue());
 
-        List<AssetDepreciationDTO> assetDepreciationDtos = asset.getAssetDepreciation().stream()
-                .map(assetDepreciation -> {
-                    AssetDepreciationDTO assetDepreciationDto = new AssetDepreciationDTO();
-                    assetDepreciationDto.setAssetCodeSno(assetDepreciationDto.assetEntity(asset));
-                    assetDepreciationDto.setAccumlatedDepreciation(assetDepreciation.getAccumlatedDepreciation());
-                    assetDepreciationDto.setDepreciationCost(assetDepreciation.getDepreciationCost());
-                    assetDepreciationDto.setDepreciationDate(assetDepreciation.getDepreciationDate());
-                    assetDepreciationDto.setBookValue(assetDepreciation.getBookValue());
-                    return assetDepreciationDto;
-                })
-                .collect(Collectors.toList());
-
-        assetDto.setAssetDepreciationDTOs(assetDepreciationDtos);
-
         return assetDto;
     }
 
-    private AssetDTO convertToDto(Asset asset, int page) {
-        AssetDTO assetDto = new AssetDTO();
-
-        assetDto.setSno(asset.getSno());
-        assetDto.setWrmsAssetCode(asset.getWrmsAssetCode());
-        assetDto.setWrmsItemCode(asset.getWrmsItemCode());
-        assetDto.setSerialNumber(asset.getSerialNumber());
-        assetDto.setIlsangProductCode(asset.getIlsangProductCode());
-        assetDto.setProductName(asset.getProductName());
-        assetDto.setSupplyPrice(asset.getSupplyPrice());
-        assetDto.setVat(asset.getVat());
-        assetDto.setTotalPrice(asset.getTotalPrice());
-        assetDto.setUsefulLife(asset.getUsefulLife());
-        assetDto.setWarehouseNumber(asset.getWarehouseNumber());
-        assetDto.setAssetStatus(asset.getAssetStatus());
-        assetDto.setAssetUsage(asset.getAssetUsage());
-        assetDto.setRegistDepartment(asset.getRegistDepartment());
-        assetDto.setRegistName(asset.getRegistName());
-        assetDto.setInitialStartDate(asset.getInitialStartDate());
-
-        List<AssetDepreciationDTO> assetDepreciationDtos = asset.getAssetDepreciation().stream()
-                .skip((long)(page-1) * 5)
-                .limit(5)
-                .map(assetDepreciation -> {
-                    AssetDepreciationDTO assetDepreciationDto = new AssetDepreciationDTO();
-                    assetDepreciationDto.setAssetCodeSno(assetDepreciationDto.assetEntity(asset));
-                    assetDepreciationDto.setAccumlatedDepreciation(assetDepreciation.getAccumlatedDepreciation());
-                    assetDepreciationDto.setDepreciationCost(assetDepreciation.getDepreciationCost());
-                    assetDepreciationDto.setDepreciationDate(assetDepreciation.getDepreciationDate());
-                    assetDepreciationDto.setBookValue(assetDepreciation.getBookValue());
-                    return assetDepreciationDto;
-                })
+    private List<AssetDTO> convertToDto(Page<Asset> asset) {
+        return asset.stream()
+                .map(asset1 -> modelMapper.map(asset1, AssetDTO.class))
                 .collect(Collectors.toList());
-
-        assetDto.setAssetDepreciationDTOs(assetDepreciationDtos);
-
-        return assetDto;
     }
 
     @Transactional
@@ -178,10 +136,19 @@ public class AssetService {
         em.flush();
     }
 
-    public Page<AssetDTO> findAll(Pageable pageable) {
-        Page<Asset> assetPage = assetRepository.findAll(pageable);
+    public ResponsePageInfo findAll(int page, int size) {
+        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page, size));
+        List<AssetDTO> assetDtos = convertToDto(assetPage);
+        Long no;
 
-        return assetPage.map(this::convertToDto);
+        // 자산조회 시 자산별로 페이지 NO 세팅
+        for (AssetDTO asset1 : assetDtos) {
+            no = assetPage.getTotalElements() - ((long) page * size) - assetDtos.indexOf(asset1);
+
+            asset1.setNo(no);
+        }
+
+        return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
 
     public AssetDTO findAsset(Long sno) {
