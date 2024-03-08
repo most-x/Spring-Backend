@@ -1,4 +1,5 @@
 package com.mostx.asset.service;
+
 import com.mostx.asset.dto.*;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
@@ -32,65 +33,15 @@ public class AssetService {
     private final AssetRepository assetRepository;
     private final JPAQueryFactory jpaQueryFactory;
     private final EntityManager em;
-
     private final ModelMapper modelMapper = new ModelMapper();
 
-    private Asset convertToEntity(AssetDTO assetDto) {
-        Asset asset = new Asset();
-        asset.setWrmsAssetCode(assetDto.getWrmsAssetCode());
-        asset.setWrmsItemCode(assetDto.getWrmsItemCode());
-        asset.setSerialNumber(assetDto.getSerialNumber());
-        asset.setIlsangProductCode(assetDto.getIlsangProductCode());
-        asset.setProductName(assetDto.getProductName());
-        if (assetDto.getSupplyPrice() != 0) {
-            asset.setSupplyPrice(assetDto.getSupplyPrice());
-        }
-        if (assetDto.getVat() != 0) {
-            asset.setVat(assetDto.getVat());
-        }
+    // DTO를 Entity로 변환 후 저장 Asset 등록 Controller에서만 사용
+    private void convertToEntity(AssetDTO assetDto) {
+        Asset asset = modelMapper.map(assetDto, Asset.class);
+
         asset.setTotalPrice(assetDto.getSupplyPrice() + assetDto.getVat());
-        if (assetDto.getUsefulLife() != 0) {
-            asset.setUsefulLife(assetDto.getUsefulLife());
-        }
-        asset.setWarehouseNumber(assetDto.getWarehouseNumber());
-        asset.setAssetStatus(assetDto.getAssetStatus());
-        asset.setAssetUsage(assetDto.getAssetUsage());
-        asset.setRegistDepartment(assetDto.getRegistDepartment());
-        asset.setRegistName(assetDto.getRegistName());
-        asset.setInitialStartDate(assetDto.getInitialStartDate());
 
-        return asset;
-    }
-
-    private AssetDTO convertToDto(Asset asset) {
-        AssetDTO assetDto = new AssetDTO();
-
-        assetDto.setSno(asset.getSno());
-        assetDto.setWrmsAssetCode(asset.getWrmsAssetCode());
-        assetDto.setWrmsItemCode(asset.getWrmsItemCode());
-        assetDto.setSerialNumber(asset.getSerialNumber());
-        assetDto.setIlsangProductCode(asset.getIlsangProductCode());
-        assetDto.setProductName(asset.getProductName());
-        assetDto.setSupplyPrice(asset.getSupplyPrice());
-        assetDto.setVat(asset.getVat());
-        assetDto.setTotalPrice(asset.getTotalPrice());
-        assetDto.setUsefulLife(asset.getUsefulLife());
-        assetDto.setWarehouseNumber(asset.getWarehouseNumber());
-        assetDto.setAssetStatus(asset.getAssetStatus());
-        assetDto.setAssetUsage(asset.getAssetUsage());
-        assetDto.setRegistDepartment(asset.getRegistDepartment());
-        assetDto.setRegistName(asset.getRegistName());
-        assetDto.setInitialStartDate(asset.getInitialStartDate());
-        assetDto.setSalesRecognitionAmount(asset.getSalesRecognitionAmount());
-        assetDto.setSaleDate(asset.getSaleDate());
-        assetDto.setSaleAmount(asset.getSaleAmount());
-        assetDto.setDisposalDate(asset.getDisposalDate());
-        assetDto.setDisposalAmount(asset.getDisposalAmount());
-        assetDto.setDepreciationCurrent(asset.getDepreciationCurrent());
-        assetDto.setDepreciationTotalprice(asset.getDepreciationTotalprice());
-        assetDto.setBookValue(asset.getBookValue());
-
-        return assetDto;
+        assetRepository.save(asset);
     }
 
     private List<AssetDTO> convertToDto(Page<Asset> asset) {
@@ -99,14 +50,22 @@ public class AssetService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public AssetDTO register(AssetDTO assetDto) {
-        Asset assetRegist = convertToEntity(assetDto);
-        Asset savedAssetRegist = assetRepository.save(assetRegist);
-
-        return convertToDto(savedAssetRegist);
+    private AssetDTO convertToDto(Asset asset) {
+        return modelMapper.map(asset, AssetDTO.class);
     }
 
+    // 자산등록
+    // DTO로 넘겨받은 정보를 Entity로 변환 후 저장한다.
+    // return 데이터는 저장된 Entity를 DTO로 변환하여 반환한다.
+    @Transactional
+    public String register(AssetDTO assetDto) {
+        convertToEntity(assetDto);
+
+        return "성공적으로 등록되었습니다.";
+    }
+
+    // 자산 매각, 폐기 업데이트
+    // 넘어온 sno 기준으로 자산에 대하여 매각 or 폐기 update
     public AssetDTO update(Long id, AssetRequestDTO assetRequestDto) {
         Asset assetUpdate = assetRepository.findBySno(id).orElseThrow(() -> {
             return new NullPointerException("해당 자산이 존재하지 않습니다.");
@@ -123,6 +82,7 @@ public class AssetService {
         return convertToDto(savedAssetUpdate);
     }
 
+    // 내용연수, 자산개시일이 존재하는 자산에 대하여 감가상각 정보 업데이트
     @Transactional
     public void update(Long id, int depreciationCost, int depreciationTotalprice, int bookValue) {
         Asset asset1 = em.find(Asset.class, id);
@@ -136,6 +96,7 @@ public class AssetService {
         em.flush();
     }
 
+    // 전체자산 조회
     public ResponsePageInfo findAll(int page, int size) {
         Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page, size));
         List<AssetDTO> assetDtos = convertToDto(assetPage);
@@ -151,6 +112,7 @@ public class AssetService {
         return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
 
+    // 자산 sno 기준으로 조회
     public AssetDTO findAsset(Long sno) {
         Asset idAsset = assetRepository.findBySno(sno).orElseThrow(() -> {
             return new IllegalArgumentException("Asset ID를 찾을 수 없습니다.");
@@ -159,12 +121,16 @@ public class AssetService {
         return convertToDto(idAsset);
     }
 
-    public Asset findAssetCode(String wrmsAssetCode){
-        return assetRepository.findByWrmsAssetCode(wrmsAssetCode).orElseThrow(()->{
+    // 자산코드 기준으로 조회
+    public AssetDTO findAssetCode(String wrmsAssetCode){
+        Asset codeAsset = assetRepository.findByWrmsAssetCode(wrmsAssetCode).orElseThrow(()->{
             return new EntityNotFoundException("자산코드로 등록된 자산이 없습니다.");
         });
+
+        return convertToDto(codeAsset);
     }
 
+    // 자산 감가상각 현황 조회 (건별 자산 조회)
     public Page<AssetDTO> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto, Pageable pageable) {
         List<Asset> assetDepreciationSearchDtoList = jpaQueryFactory
                 .selectFrom(asset)
@@ -188,6 +154,7 @@ public class AssetService {
         return new PageImpl<>(assetDtoList, pageable, count);
     }
 
+    // 전체 자산에 대하여 검색조건을 기반으로 조회
     public Page<AssetDTO> findSearchAsset(AssetResearchDTO assetResearchDto, Pageable pageable) {
         List<Asset> searchAsset = jpaQueryFactory
                 .selectFrom(asset)

@@ -1,6 +1,7 @@
 package com.mostx.asset.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -22,6 +23,7 @@ public class AssetDepreciation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_code_sno")
+    @JsonIgnore
     private Asset assetSno;
 
     @Column(nullable = false, name = "depreciation_cost")

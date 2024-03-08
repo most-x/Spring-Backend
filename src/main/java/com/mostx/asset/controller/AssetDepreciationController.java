@@ -4,10 +4,10 @@ import com.mostx.asset.dto.AssetDTO;
 import com.mostx.asset.dto.AssetDepreciationSearchDTO;
 import com.mostx.asset.dto.AssetRequestDTO;
 import com.mostx.asset.dto.AssetResearchDTO;
-import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.DashboardRepository;
 import com.mostx.asset.response.Response;
 import com.mostx.asset.response.ResponsePageInfo;
+import com.mostx.asset.service.AssetDepreciationService;
 import com.mostx.asset.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +34,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*", methods = RequestMethod.GET)
 public class AssetDepreciationController {
     private final AssetService assetService;
+    private final AssetDepreciationService assetDepreciationService;
     private final DashboardRepository dashboardRepository;
 
     // Asset DashBoard
@@ -76,16 +77,15 @@ public class AssetDepreciationController {
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
     @Parameter(name="wrmsAssetCode", description = "WRMS 자산코드", example = "TEST000000001")
     public Response<?> findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
-        Asset asset = assetService.findAssetCode(wrmsAssetCode);
-        return new Response<>(asset);
+        AssetDTO assetDto = assetService.findAssetCode(wrmsAssetCode);
+        return new Response<>(assetDto);
     }
 
     @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/asset-regist")
-    public Response<?> register(@RequestBody @Valid AssetDTO assetDto){
-        AssetDTO savedAsset = assetService.register(assetDto);
-        return new Response<>(savedAsset);
+    public String register(@RequestBody @Valid AssetDTO assetDto){
+        return assetService.register(assetDto);
     }
 
     @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
@@ -100,5 +100,12 @@ public class AssetDepreciationController {
     public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(size = 10) Pageable pageable) {
         Page<AssetDTO> researchDto = assetService.findSearchAsset(assetResearchDto, pageable);
         return new Response<>(researchDto);
+    }
+
+    // assetSno으로 감가상각 조회
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/asset-depreciation/{assetCodeSno}")
+    public ResponsePageInfo findDepreciation(@PathVariable("assetCodeSno") Long assetCodeSno, int page, int size){
+        return assetDepreciationService.findSno(assetCodeSno, page, size);
     }
 }

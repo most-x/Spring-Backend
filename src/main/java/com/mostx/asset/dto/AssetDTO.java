@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -48,7 +47,7 @@ public class AssetDTO {
     private Integer vat;
 
     @Schema(description = "공급가+부가세")
-    // supplyPirce + vat 합산금액이 자동으로 세팅
+    // supplyPirce + vat 합산금액
     private Integer totalPrice;
 
     @Schema(description = "내용연수")
@@ -101,8 +100,4 @@ public class AssetDTO {
 
     @Transient
     private Long no;
-
-    public Integer getUsefulLife() {
-        return Objects.requireNonNullElse(usefulLife, 0);
-    }
 }

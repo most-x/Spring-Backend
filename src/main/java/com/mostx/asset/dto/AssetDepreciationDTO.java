@@ -1,7 +1,7 @@
 package com.mostx.asset.dto;
 
-import com.mostx.asset.entity.Asset;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,11 +27,7 @@ public class AssetDepreciationDTO {
     @Schema(description = "감가상각일")
     private LocalDate depreciationDate;
 
-    // asset Sno 만 추출하여 API 로 표기해주도록
-    public Long assetEntity(Asset asset){
-        AssetDepreciationDTO assetDepreciationDTO = new AssetDepreciationDTO();
-        assetDepreciationDTO.setAssetCodeSno(asset.getSno());
-
-        return assetDepreciationDTO.getAssetCodeSno();
-    }
+    @Transient
+    @Schema(description = "게시글 No")
+    private Long no;
 }
