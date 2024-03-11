@@ -98,13 +98,13 @@ public class AssetService {
 
     // 전체자산 조회
     public ResponsePageInfo findAll(int page, int size) {
-        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page, size));
+        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
         List<AssetDTO> assetDtos = convertToDto(assetPage);
         Long no;
 
         // 자산조회 시 자산별로 페이지 NO 세팅
         for (AssetDTO asset1 : assetDtos) {
-            no = assetPage.getTotalElements() - ((long) page * size) - assetDtos.indexOf(asset1);
+            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - assetDtos.indexOf(asset1);
 
             asset1.setNo(no);
         }

@@ -32,13 +32,13 @@ public class AssetDepreciationService {
         long no;
 
         // 감가상각 데이터 page, size 적용
-        Page<AssetDepreciation> assetDepreciations = assetDepreciationRepository.findByAssetSno(assetCodeSno, PageRequest.of(page, size));
+        Page<AssetDepreciation> assetDepreciations = assetDepreciationRepository.findByAssetSno(assetCodeSno, PageRequest.of(page - 1, size));
 
         List<AssetDepreciationDTO> assetDepreciationDtos = convertToDto(assetDepreciations);
 
         for (AssetDepreciationDTO numberCount : assetDepreciationDtos) {
             // 감가상각 게시글 no 데이터
-            no = assetDepreciations.getTotalElements() - ((long) page * size) - assetDepreciationDtos.indexOf(numberCount);
+            no = assetDepreciations.getTotalElements() - ((long) (page - 1) * size) - assetDepreciationDtos.indexOf(numberCount);
 
             numberCount.setNo(no);
         }
