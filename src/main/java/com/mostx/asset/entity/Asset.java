@@ -62,6 +62,9 @@ public class Asset {
     @Column(nullable = false, name="regist_name")
     private String registName;
 
+    @Column(nullable = true, name="asset_regist_date")
+    private LocalDate assetRegistDate;
+
     @Column(nullable = true, name="initial_start_date")
     private LocalDate initialStartDate;
 

@@ -71,6 +71,9 @@ public class AssetDTO {
     @Schema(description = "등록자 정보-성명")
     private String registName;
 
+    @Schema(description = "자산 등록일자")
+    private LocalDate assetRegistDate;
+
     @Schema(description = "최초 개시일")
     private LocalDate initialStartDate;
 
