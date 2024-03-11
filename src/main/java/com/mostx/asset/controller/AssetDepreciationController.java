@@ -45,6 +45,7 @@ public class AssetDepreciationController {
         return dashboardRepository.findDashboard();
     }
 
+    // 전체 자산조회
     @Operation(summary = "전체 자산 조회", description = "자산을 전체 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -53,10 +54,12 @@ public class AssetDepreciationController {
                     content = {@Content(schema = @Schema(implementation = AssetDTO.class))}),
             @ApiResponse(responseCode = "404", description = "자산정보가 존재하지 않습니다."),
     })
-    public ResponsePageInfo findAll(int page, int size){
+    public ResponsePageInfo findAll(@RequestParam(required = false, defaultValue = "1") int page,
+                                    @RequestParam(required = false, defaultValue = "10") int size){
         return assetService.findAll(page, size);
     }
 
+    // sno으로 자산조회
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Response<?> findAsset(@PathVariable("id") Long id){
@@ -64,7 +67,8 @@ public class AssetDepreciationController {
         return new Response<>(idAsset);
     }
 
-    @Operation(summary = "감가상각 자산검색", description = "검색내용과 일치하는 자산의 리스트를 조회한다.")
+    // 사내정보관리시스템 > 자산감가상각 > 건별 자산 조회 최상단 검색조건을 기준으로 자산 리스트를 검색한다.
+    @Operation(summary = "건별자산조회 검색", description = "검색내용과 일치하는 건별자산 리스트를 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/asset-depreciation-search")
     public Response<?> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
@@ -72,6 +76,8 @@ public class AssetDepreciationController {
         return new Response<>(assetDepreciationSearchDto1);
     }
 
+    // 자산번호 기준으로 자산을 조회
+    // 자산정보 및 자산의 감가상각 현황을 조회하기 위한 API
     @Operation(summary = "자산번호 검색", description = "WRMS에 등록된 자산코드로 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
@@ -81,6 +87,7 @@ public class AssetDepreciationController {
         return new Response<>(assetDto);
     }
 
+    // 자산등록을 위한 API
     @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/asset-regist")
@@ -88,6 +95,8 @@ public class AssetDepreciationController {
         return assetService.register(assetDto);
     }
 
+    // 자산 매각 및 폐기를 위한 API
+    // API는 patch를 적용하여 받은 내용에 대해서만 업데이트 되도록 구현
     @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/asset-update/{id}")
@@ -96,8 +105,9 @@ public class AssetDepreciationController {
         return new Response<>(updateAsset);
     }
 
+    // 전체 자산 검색 API (검색조건을 사용)
     @GetMapping("/asset-search")
-    public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(size = 10) Pageable pageable) {
+    public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(page = 1, size = 10) Pageable pageable) {
         Page<AssetDTO> researchDto = assetService.findSearchAsset(assetResearchDto, pageable);
         return new Response<>(researchDto);
     }
@@ -105,7 +115,9 @@ public class AssetDepreciationController {
     // assetSno으로 감가상각 조회
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/asset-depreciation/{assetCodeSno}")
-    public ResponsePageInfo findDepreciation(@PathVariable("assetCodeSno") Long assetCodeSno, int page, int size){
+    public ResponsePageInfo findDepreciation(@PathVariable("assetCodeSno") Long assetCodeSno,
+                                             @RequestParam(required = false, defaultValue = "1") int page,
+                                             @RequestParam(required = false, defaultValue = "10") int size){
         return assetDepreciationService.findSno(assetCodeSno, page, size);
     }
 }
