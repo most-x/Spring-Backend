@@ -43,7 +43,6 @@ public class AssetDTO {
     private Integer supplyPrice;
 
     @Schema(description = "매입원가-부가세")
-    @NotNull(message = "매입원가-부가세가 입력되지 않았습니다")
     private Integer vat;
 
     @Schema(description = "공급가+부가세")
@@ -58,11 +57,9 @@ public class AssetDTO {
     private String warehouseNumber;
 
     @Schema(description = "자산상태")
-    @NotNull(message = "자산상태를 체크해주세요.")
     private String assetStatus;
 
     @Schema(description = "자산용도")
-    @NotNull(message = "자산용도를 체크해주세요.")
     private String assetUsage;
 
     @Schema(description = "등록자 정보-부서명")
