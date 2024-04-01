@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DashboardDTO {
     private Long totalAsset;
-    private Long normalAsset;
-    private Long saleAsset;
-    private Long disposeAsset;
-    private Long startAsset;
-    private Long nonStartAsset;
-    private int accumlatedTotal;
-    private int bookValueTotal;
-    private int totalPrice;
+    private Long assetNormal;
+    private Long assetSale;
+    private Long assetDispose;
+    private Long assetStart;
+    private Long assetNonStart;
+    private int sumDepreciationAsset;
+    private int bookValueAsset;
+    private int totalPriceAsset;
 }
