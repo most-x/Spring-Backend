@@ -1,9 +1,6 @@
 package com.mostx.asset.controller;
 
-import com.mostx.asset.dto.AssetDTO;
-import com.mostx.asset.dto.AssetDepreciationSearchDTO;
-import com.mostx.asset.dto.AssetRequestDTO;
-import com.mostx.asset.dto.AssetResearchDTO;
+import com.mostx.asset.dto.*;
 import com.mostx.asset.repository.DashboardRepository;
 import com.mostx.asset.response.Response;
 import com.mostx.asset.response.ResponsePageInfo;
@@ -41,7 +38,7 @@ public class AssetDepreciationController {
     @Operation(summary = "대시보드", description = "대시보드 표기정보")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/dashboard")
-    public List<Map<String, Object>> dashBoard() {
+    public List<DashboardDTO> dashBoard() {
         return dashboardRepository.findDashboard();
     }
 
@@ -70,7 +67,7 @@ public class AssetDepreciationController {
     @Operation(summary = "건별자산조회 검색", description = "검색내용과 일치하는 건별자산 리스트를 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/asset-depreciation-search")
-    public Response<List<AssetDTO>> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
+    public Response<List<AssetDTO>> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto){
         return assetService.findAssetDepreciationSearch(assetDepreciationSearchDto);
     }
 
