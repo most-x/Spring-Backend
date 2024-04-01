@@ -38,16 +38,16 @@ public class Asset {
     @Column(nullable = false, name="supply_price")
     private int supplyPrice;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int vat;
 
-    @Column(nullable = false, name="total_price")
+    @Column(nullable = true, name="total_price")
     private int totalPrice;
 
     @Column(nullable = true, name="useful_life")
     private Integer usefulLife;
 
-    @Column(nullable = false, name="warehouse_number")
+    @Column(nullable = true, name="warehouse_number")
     private String warehouseNumber;
 
     @Column(nullable = false, name="asset_status")
