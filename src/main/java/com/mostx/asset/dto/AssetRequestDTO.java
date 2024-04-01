@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetRequestDTO {
+    @Schema(description = "자산SNO")
+    private Long sno;
+
     @Schema(description = "매출인식액")
     private Integer salesRecognitionAmount;
 

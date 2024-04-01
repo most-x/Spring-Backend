@@ -62,18 +62,16 @@ public class AssetDepreciationController {
     // sno으로 자산조회
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public Response<?> findAsset(@PathVariable("id") Long id){
-        AssetDTO idAsset = assetService.findAsset(id);
-        return new Response<>(idAsset);
+    public AssetDTO findAsset(@PathVariable("id") Long id){
+        return assetService.findAsset(id);
     }
 
     // 사내정보관리시스템 > 자산감가상각 > 건별 자산 조회 최상단 검색조건을 기준으로 자산 리스트를 검색한다.
     @Operation(summary = "건별자산조회 검색", description = "검색내용과 일치하는 건별자산 리스트를 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/asset-depreciation-search")
-    public Response<?> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
-        Page<AssetDTO> assetDepreciationSearchDto1 = assetService.findAssetDepreciationSearch(assetDepreciationSearchDto, pageable);
-        return new Response<>(assetDepreciationSearchDto1);
+    public Response<List<AssetDTO>> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto, @PageableDefault(size = 10) Pageable pageable){
+        return assetService.findAssetDepreciationSearch(assetDepreciationSearchDto);
     }
 
     // 자산번호 기준으로 자산을 조회
@@ -82,9 +80,8 @@ public class AssetDepreciationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
     @Parameter(name="wrmsAssetCode", description = "WRMS 자산코드", example = "TEST000000001")
-    public Response<?> findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
-        AssetDTO assetDto = assetService.findAssetCode(wrmsAssetCode);
-        return new Response<>(assetDto);
+    public AssetDTO findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
+        return  assetService.findAssetCode(wrmsAssetCode);
     }
 
     // 자산등록을 위한 API
@@ -99,17 +96,17 @@ public class AssetDepreciationController {
     // API는 patch를 적용하여 받은 내용에 대해서만 업데이트 되도록 구현
     @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/asset-update/{id}")
-    public Response<?> update(@PathVariable Long id, @RequestBody @Valid AssetRequestDTO assetRequestDto) {
-        AssetDTO updateAsset = assetService.update(id, assetRequestDto);
-        return new Response<>(updateAsset);
+    @PatchMapping("/asset-update")
+    public AssetDTO update(@RequestBody @Valid AssetRequestDTO assetRequestDto) {
+        return assetService.update(assetRequestDto);
     }
 
     // 전체 자산 검색 API (검색조건을 사용)
     @GetMapping("/asset-search")
-    public Response<?> findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto, @PageableDefault(page = 1, size = 10) Pageable pageable) {
-        Page<AssetDTO> researchDto = assetService.findSearchAsset(assetResearchDto, pageable);
-        return new Response<>(researchDto);
+    public ResponsePageInfo findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto,
+                                            @RequestParam(required = false, defaultValue = "1") int page,
+                                            @RequestParam(required = false, defaultValue = "10") int size) {
+        return assetService.findSearchAsset(assetResearchDto, page, size);
     }
 
     // assetSno으로 감가상각 조회

@@ -3,6 +3,7 @@ package com.mostx.asset.service;
 import com.mostx.asset.dto.*;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
+import com.mostx.asset.response.Response;
 import com.mostx.asset.response.ResponsePageInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
@@ -39,7 +40,9 @@ public class AssetService {
     private void convertToEntity(AssetDTO assetDto) {
         Asset asset = modelMapper.map(assetDto, Asset.class);
 
-        asset.setTotalPrice(assetDto.getSupplyPrice() + assetDto.getVat());
+        asset.setAssetStatus("정상");
+        asset.setAssetUsage("구독");
+        asset.setAssetRegistDate(LocalDate.now());
 
         assetRepository.save(asset);
     }
@@ -66,8 +69,8 @@ public class AssetService {
 
     // 자산 매각, 폐기 업데이트
     // 넘어온 sno 기준으로 자산에 대하여 매각 or 폐기 update
-    public AssetDTO update(Long id, AssetRequestDTO assetRequestDto) {
-        Asset assetUpdate = assetRepository.findBySno(id).orElseThrow(() -> {
+    public AssetDTO update(AssetRequestDTO assetRequestDto) {
+        Asset assetUpdate = assetRepository.findBySno(assetRequestDto.getSno()).orElseThrow(() -> {
             return new NullPointerException("해당 자산이 존재하지 않습니다.");
         });
 
@@ -84,7 +87,7 @@ public class AssetService {
 
     // 내용연수, 자산개시일이 존재하는 자산에 대하여 감가상각 정보 업데이트
     @Transactional
-    public void update(Long id, int depreciationCost, int depreciationTotalprice, int bookValue) {
+    public void updateDepreciation(Long id, int depreciationCost, int depreciationTotalprice, int bookValue) {
         Asset asset1 = em.find(Asset.class, id);
 
         asset1.setDepreciationCurrent(depreciationCost);
@@ -131,31 +134,21 @@ public class AssetService {
     }
 
     // 자산 감가상각 현황 조회 (건별 자산 조회)
-    public Page<AssetDTO> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto, Pageable pageable) {
+    public Response<List<AssetDTO>> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto) {
         List<Asset> assetDepreciationSearchDtoList = jpaQueryFactory
                 .selectFrom(asset)
                 .where(assetSearch(assetDepreciationSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDepreciationSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
                         assetSearch(assetDepreciationSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetDepreciationSearchDto.getIlsangProductCode(), asset.ilsangProductCode),
                         assetSearch(assetDepreciationSearchDto.getProductName(), asset.productName))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
-
-        Long count = jpaQueryFactory
-                .select(asset.count())
-                .from(asset)
-                .where(assetSearch(assetDepreciationSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDepreciationSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
-                        assetSearch(assetDepreciationSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetDepreciationSearchDto.getIlsangProductCode(), asset.ilsangProductCode),
-                        assetSearch(assetDepreciationSearchDto.getProductName(), asset.productName))
-                .fetchOne();
 
         List<AssetDTO> assetDtoList = assetDepreciationSearchDtoList.stream().map(this::convertToDto).toList();
 
-        return new PageImpl<>(assetDtoList, pageable, count);
+        return new Response<>(assetDtoList);
     }
 
     // 전체 자산에 대하여 검색조건을 기반으로 조회
-    public Page<AssetDTO> findSearchAsset(AssetResearchDTO assetResearchDto, Pageable pageable) {
+    public ResponsePageInfo findSearchAsset(AssetResearchDTO assetResearchDto, int page, int size) {
         List<Asset> searchAsset = jpaQueryFactory
                 .selectFrom(asset)
                 .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
@@ -163,13 +156,22 @@ public class AssetService {
                         assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getStartPrice(), assetResearchDto.getEndPrice()),
                         initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
                         currentMonthBetween(assetResearchDto.getPriceType()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<AssetDTO> resultDto = searchAsset.stream().map(this::convertToDto).toList();
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
+        Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
+        List<AssetDTO> resultDto = convertToDto(assetPage);
+        Long no;
 
-        return new PageImpl<>(resultDto, pageable, searchAsset.size());
+        for (AssetDTO asset1 : resultDto) {
+            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - resultDto.indexOf(asset1);
+
+            asset1.setNo(no);
+        }
+
+        return new ResponsePageInfo<>(resultDto, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
 
     private BooleanExpression assetSearch(String searchAssetValue, StringPath asset) {

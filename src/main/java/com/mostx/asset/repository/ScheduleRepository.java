@@ -23,7 +23,7 @@ public class ScheduleRepository {
         return em.createQuery(
                         "select d from mostx_AssetDepreciation d" +
                                 " where d.assetSno.sno= :assetId" +
-                                " order by depreciationDate desc, accumlatedDepreciation desc limit 1", AssetDepreciation.class)
+                                " order by depreciationDate desc, accumlatedDepreciation desc", AssetDepreciation.class)
                 .setParameter("assetId", assetId)
                 .getResultList();
     }
