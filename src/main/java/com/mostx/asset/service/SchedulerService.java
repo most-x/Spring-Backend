@@ -25,7 +25,7 @@ public class SchedulerService {
         LocalDate nowDate = LocalDate.now();
 
         for (Asset asset : assets) {
-            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상") && asset.getBookValue() != 0) {
+            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상") && asset.getBookValue() != 0 && asset.getBookValue() != null) {
                 if (asset.getUsefulLife() != null) {
                     usefulListMonth = asset.getUsefulLife() * 12;
                     depreciationCost = asset.getTotalPrice() / usefulListMonth;
