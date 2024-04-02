@@ -17,7 +17,7 @@ public class SchedulerService {
     private final AssetService assetService;
     private final AssetDepreciationService assetDepreciationService;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void run() {
         List<Asset> assets = scheduleRepository.findAll();
         List<AssetDepreciation> assetDepreciation;
@@ -25,7 +25,7 @@ public class SchedulerService {
         LocalDate nowDate = LocalDate.now();
 
         for (Asset asset : assets) {
-            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상")) {
+            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상") && asset.getBookValue() != 0) {
                 if (asset.getUsefulLife() != null) {
                     usefulListMonth = asset.getUsefulLife() * 12;
                     depreciationCost = asset.getSupplyPrice() / usefulListMonth;

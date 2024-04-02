@@ -43,6 +43,7 @@ public class AssetService {
         asset.setAssetStatus("정상");
         asset.setAssetUsage("구독");
         asset.setAssetRegistDate(LocalDate.now());
+        asset.setBookValue(asset.getSupplyPrice());
 
         assetRepository.save(asset);
     }
