@@ -25,10 +25,12 @@ public class SchedulerService {
         LocalDate nowDate = LocalDate.now();
 
         for (Asset asset : assets) {
-            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상") && asset.getBookValue() != 0 && asset.getBookValue() != null) {
+            if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상") && asset.getBookValue() != 0) {
                 if (asset.getUsefulLife() != null) {
                     usefulListMonth = asset.getUsefulLife() * 12;
                     depreciationCost = asset.getTotalPrice() / usefulListMonth;
+                } else if(asset.getBookValue() == null){
+                    continue;
                 } else {
                     System.out.println("내용연수가 입력되지 않은 자산입니다. 자산이름 : " + asset.getProductName() + ", 자산번호 : " + asset.getWrmsAssetCode());
                     continue;
