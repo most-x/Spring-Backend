@@ -17,7 +17,7 @@ public class SchedulerService {
     private final AssetService assetService;
     private final AssetDepreciationService assetDepreciationService;
 
-    @Scheduled(cron = "0 1 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void run() {
         List<Asset> assets = scheduleRepository.findAll();
         List<AssetDepreciation> assetDepreciation;
@@ -62,7 +62,6 @@ public class SchedulerService {
                         accumlatedDepreciation = assetDepreciation.get(0).getAccumlatedDepreciation() + depreciationCost;
                         bookValue = assetDepreciation.get(0).getBookValue() - depreciationCost;
                     } else if (nowDate.isAfter(assetDepreciation.get(0).getDepreciationDate().plusDays(30))) {
-                        System.out.println("test");
                         // 자산의 장부가액이 0원일 경우 감가진행 없음
                         if(assetDepreciation.get(0).getBookValue() == 0){
                             continue;
@@ -81,7 +80,7 @@ public class SchedulerService {
                 assetDepreciation1.setDepreciationCost(depreciationCost);
                 assetDepreciation1.setAccumlatedDepreciation(accumlatedDepreciation);
                 assetDepreciation1.setBookValue(bookValue);
-                assetDepreciation1.setDepreciationDate(LocalDate.now());
+                assetDepreciation1.setDepreciationDate(nowDate);
 
                 assetDepreciationService.saveDepreciation(assetDepreciation1);
 
