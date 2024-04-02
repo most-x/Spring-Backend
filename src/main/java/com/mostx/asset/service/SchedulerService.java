@@ -29,8 +29,6 @@ public class SchedulerService {
                 if (asset.getUsefulLife() != null) {
                     usefulListMonth = asset.getUsefulLife() * 12;
                     depreciationCost = asset.getTotalPrice() / usefulListMonth;
-                } else if(asset.getBookValue() == null){
-                    continue;
                 } else {
                     System.out.println("내용연수가 입력되지 않은 자산입니다. 자산이름 : " + asset.getProductName() + ", 자산번호 : " + asset.getWrmsAssetCode());
                     continue;
@@ -64,6 +62,7 @@ public class SchedulerService {
                         accumlatedDepreciation = assetDepreciation.get(0).getAccumlatedDepreciation() + depreciationCost;
                         bookValue = assetDepreciation.get(0).getBookValue() - depreciationCost;
                     } else if (nowDate.isAfter(assetDepreciation.get(0).getDepreciationDate().plusDays(30))) {
+                        System.out.println("test");
                         // 자산의 장부가액이 0원일 경우 감가진행 없음
                         if(assetDepreciation.get(0).getBookValue() == 0){
                             continue;
