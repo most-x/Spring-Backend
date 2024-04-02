@@ -28,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/api/assets")
 @RequiredArgsConstructor
 @Tag(name = "자산감가상각", description = "자산감가상각 API")
-@CrossOrigin(origins = "*", methods = RequestMethod.GET)
+@CrossOrigin(origins = "https://japi.mostx.co.kr, http://japi.mostx.co.kr")
 public class AssetDepreciationController {
     private final AssetService assetService;
     private final AssetDepreciationService assetDepreciationService;
