@@ -28,7 +28,7 @@ public class SchedulerService {
             if (asset.getInitialStartDate() != null && asset.getAssetStatus().equals("정상")) {
                 if (asset.getUsefulLife() != null) {
                     usefulListMonth = asset.getUsefulLife() * 12;
-                    depreciationCost = asset.getTotalPrice() / usefulListMonth;
+                    depreciationCost = asset.getSupplyPrice() / usefulListMonth;
                 } else {
                     System.out.println("내용연수가 입력되지 않은 자산입니다. 자산이름 : " + asset.getProductName() + ", 자산번호 : " + asset.getWrmsAssetCode());
                     continue;
