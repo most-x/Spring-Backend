@@ -38,23 +38,24 @@ public class AssetDTO {
     @NotNull(message = "상품명이 입력되지 않았습니다.")
     private String productName;
 
-    @Schema(description = "매입원가-공급가")
-    @NotNull(message = "매입원가-공급가가 입력되지 않았습니다.")
+    @Schema(description = "공급가")
+    @NotNull(message = "공급가가 입력되지 않았습니다.")
     private Integer supplyPrice;
 
-    @Schema(description = "매입원가-부가세")
-    private Integer vat;
-
-    @Schema(description = "공급가+부가세")
-    // supplyPirce + vat 합산금액
-    private Integer totalPrice;
+//    @Schema(description = "매입원가-부가세")
+//    private Integer vat;
+//
+//    @Schema(description = "공급가+부가세")
+//    // supplyPirce + vat 합산금액
+//    private Integer totalPrice;
 
     @Schema(description = "내용연수")
+    @NotNull(message = "내용연수가 입력되지 않았습니다.")
     private Integer usefulLife;
 
-    @Schema(description = "창고번호")
-    @NotNull(message = "창고번호가 입력되지 않았습니다.")
-    private String warehouseNumber;
+//    @Schema(description = "창고번호")
+//    @NotNull(message = "창고번호가 입력되지 않았습니다.")
+//    private String warehouseNumber;
 
     @Schema(description = "자산상태")
     private String assetStatus;
