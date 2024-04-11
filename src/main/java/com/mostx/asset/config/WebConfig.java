@@ -12,7 +12,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://japi.mostx.co.kr", "https://japi.mostx.co.kr")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedHeaders("Authorization", "Content-Type")
-                .exposedHeaders("Custom-Header")
                 .allowCredentials(true)
                 .maxAge(3600);
     }
