@@ -94,7 +94,7 @@ public class AssetDepreciationController {
     @Operation(summary = "자산매각, 폐기", description = "WRMS에 등록된 자산을 수정한다.")
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/asset-update")
-    public AssetDTO update(@RequestBody @Valid AssetRequestDTO assetRequestDto) {
+    public String update(@RequestBody @Valid List<AssetRequestDTO> assetRequestDto) {
         return assetService.update(assetRequestDto);
     }
 

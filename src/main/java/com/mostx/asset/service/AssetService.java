@@ -72,20 +72,30 @@ public class AssetService {
 
     // 자산 매각, 폐기 업데이트
     // 넘어온 sno 기준으로 자산에 대하여 매각 or 폐기 update
-    public AssetDTO update(AssetRequestDTO assetRequestDto) {
-        Asset assetUpdate = assetRepository.findBySno(assetRequestDto.getSno()).orElseThrow(() -> {
-            return new NullPointerException("해당 자산이 존재하지 않습니다.");
-        });
+    @Transactional
+    public String update(List<AssetRequestDTO> assetRequestDto) {
+        for (AssetRequestDTO assetRequestDTO1 : assetRequestDto) {
+            Asset assetUpdate = assetRepository.findBySno(assetRequestDTO1.getSno()).orElseThrow(() -> {
+                return new NullPointerException("해당 자산이 존재하지 않습니다.");
+            });
 
-        if(assetRequestDto.getSaleDate() != null) assetUpdate.setSaleDate(assetRequestDto.getSaleDate());
-        if(assetRequestDto.getSaleAmount() != null) assetUpdate.setSaleAmount(assetRequestDto.getSaleAmount());
-        if(assetRequestDto.getSalesRecognitionAmount() != null) assetUpdate.setSalesRecognitionAmount(assetRequestDto.getSalesRecognitionAmount());
-        if(assetRequestDto.getDisposalDate() != null) assetUpdate.setDisposalDate(assetRequestDto.getDisposalDate());
-        if(assetRequestDto.getDisposalAmount() != null) assetUpdate.setDisposalAmount(assetRequestDto.getDisposalAmount());
+            if(assetRequestDTO1.getSaleDate() != null) {
+                assetUpdate.setSaleDate(assetRequestDTO1.getSaleDate());
+                assetUpdate.setSaleAmount(assetRequestDTO1.getSaleAmount());
+                assetUpdate.setSalesRecognitionAmount(assetRequestDTO1.getSalesRecognitionAmount());
+                assetUpdate.setAssetStatus("매각");
+            } else if(assetRequestDTO1.getDisposalDate() != null) {
+                assetUpdate.setDisposalDate(assetRequestDTO1.getDisposalDate());
+                assetUpdate.setDisposalAmount(assetRequestDTO1.getDisposalAmount());
 
-        Asset savedAssetUpdate = assetRepository.save(assetUpdate);
+                assetUpdate.setAssetStatus("폐기");
+            } else {
+                return "매각 날짜에 대한 정보가 존재하지 않습니다.";
+            }
 
-        return convertToDto(savedAssetUpdate);
+        }
+
+        return "업데이트가 완료되었습니다.";
     }
 
     // 내용연수, 자산개시일이 존재하는 자산에 대하여 감가상각 정보 업데이트
@@ -105,15 +115,7 @@ public class AssetService {
     // 전체자산 조회
     public ResponsePageInfo findAll(int page, int size) {
         Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
-        List<AssetDTO> assetDtos = convertToDto(assetPage);
-        Long no;
-
-        // 자산조회 시 자산별로 페이지 NO 세팅
-        for (AssetDTO asset1 : assetDtos) {
-            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - assetDtos.indexOf(asset1);
-
-            asset1.setNo(no);
-        }
+        List<AssetDTO> assetDtos = noMargin(page, size, assetPage);
 
         return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
@@ -164,15 +166,10 @@ public class AssetService {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
+
+        // List로 검색된 데이터 Page로 변환
         Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
-        List<AssetDTO> resultDto = convertToDto(assetPage);
-        Long no;
-
-        for (AssetDTO asset1 : resultDto) {
-            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - resultDto.indexOf(asset1);
-
-            asset1.setNo(no);
-        }
+        List<AssetDTO> resultDto = noMargin(page, size, assetPage);
 
         return new ResponsePageInfo<>(resultDto, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
@@ -233,5 +230,45 @@ public class AssetService {
         } else {
             return null;
         }
+    }
+
+    // 사용API 리스트 - 자산 전체조회, 자산 검색조건 조회
+    // 자산리스트 no, 손익액, 이익률 계산 메서드
+    private List<AssetDTO> noMargin(int page, int size, Page<Asset> assetPage) {
+        List<AssetDTO> assetDtos = convertToDto(assetPage);
+
+        Long no;
+        int saleMargin = 0, saleMarginRate = 0;
+
+        // 자산조회 시 자산별로 페이지 NO 세팅
+        for (AssetDTO asset1 : assetDtos) {
+            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - assetDtos.indexOf(asset1);
+
+            // 매각금액이 null이 아닐 경우 손익액 및 이익률 계산
+            if (asset1.getSaleAmount() != null) {
+                // 매각손익액 계산 (매각금액 - 장부가액) = 손익액
+                saleMargin = asset1.getSaleAmount() - asset1.getBookValue();
+
+                // 장부가액이 0이 아닐 경우 이익률 계산
+                // 이익률 = 손익액 / 장부가액 * 100
+                if (asset1.getBookValue() != 0) {
+                    saleMarginRate = (int) Math.ceil(((double) saleMargin / asset1.getBookValue()) * 100);
+                } else {
+                    // 장부가액이 0일 경우
+                    // 이익률 계산불가, 이익률 100퍼로 고정
+                    saleMarginRate = 100;
+                }
+            }
+
+            asset1.setSaleMargin(saleMargin);
+            asset1.setSaleMarginRate(saleMarginRate);
+            asset1.setNo(no);
+
+            // 손익액, 이익률 0으로 초기화
+            saleMargin = 0;
+            saleMarginRate = 0;
+        }
+
+        return assetDtos;
     }
 }

@@ -99,6 +99,14 @@ public class AssetDTO {
     @Schema(description = "장부가액")
     private Integer bookValue;
 
+    @Schema(description = "매각손익액")
+    @Transient
+    private int saleMargin;
+
+    @Schema(description = "매각이익률")
+    @Transient
+    private int saleMarginRate;
+
     @Transient
     private Long no;
 }
