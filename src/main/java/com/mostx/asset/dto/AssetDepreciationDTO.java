@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AssetDepreciationDTO {
     @Schema(description = "자산 ID")
-    private Long assetCodeSno;
+    private Long sno;
 
     @Schema(description = "감가상각비")
     private int depreciationCost;
