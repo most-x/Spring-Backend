@@ -79,7 +79,9 @@ public class AssetService {
                 return new NullPointerException("해당 자산이 존재하지 않습니다.");
             });
 
-            if(assetRequestDTO1.getSaleDate() != null) {
+            if(assetRequestDTO1.getInitialStartDate() != null) {
+                assetUpdate.setInitialStartDate(assetRequestDTO1.getInitialStartDate());
+            } else if(assetRequestDTO1.getSaleDate() != null) {
                 assetUpdate.setSaleDate(assetRequestDTO1.getSaleDate());
                 assetUpdate.setSaleAmount(assetRequestDTO1.getSaleAmount());
                 assetUpdate.setSalesRecognitionAmount(assetRequestDTO1.getSalesRecognitionAmount());
