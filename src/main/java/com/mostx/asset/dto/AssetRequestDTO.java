@@ -17,9 +17,6 @@ public class AssetRequestDTO {
     @Schema(description = "최초개시일자")
     private LocalDate initialStartDate;
 
-    @Schema(description = "매출인식액")
-    private Integer salesRecognitionAmount;
-
     @Schema(description = "매각(인수)일자")
     private LocalDate saleDate;
 
