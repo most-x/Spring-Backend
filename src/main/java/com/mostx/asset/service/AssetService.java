@@ -86,7 +86,6 @@ public class AssetService {
             if(assetRequestDTO1.getSaleDate() != null) {
                 assetUpdate.setSaleDate(assetRequestDTO1.getSaleDate());
                 assetUpdate.setSaleAmount(assetRequestDTO1.getSaleAmount());
-                assetUpdate.setSalesRecognitionAmount(assetRequestDTO1.getSalesRecognitionAmount());
                 assetUpdate.setAssetStatus("매각");
             } else if(assetRequestDTO1.getDisposalDate() != null) {
                 assetUpdate.setDisposalDate(assetRequestDTO1.getDisposalDate());
