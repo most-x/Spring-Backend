@@ -125,6 +125,13 @@ public class AssetService {
     public ResponsePageInfo findAll(int page, int size) {
         Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
         List<AssetDTO> assetDtos = convertToDto(assetPage);
+        Long no;
+
+        for (AssetDTO assetDTO : assetDtos) {
+            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - assetDtos.indexOf(assetDTO);
+
+            assetDTO.setNo(no);
+        }
 
         return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
