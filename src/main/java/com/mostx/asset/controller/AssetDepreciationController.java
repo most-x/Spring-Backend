@@ -132,7 +132,7 @@ public class AssetDepreciationController {
     @GetMapping("/asset-depreciation/{assetCodeSno}")
     public ResponsePageInfo findDepreciation(@PathVariable("assetCodeSno") Long assetCodeSno,
                                              @RequestParam(required = false, defaultValue = "1") int page,
-                                             @RequestParam(required = false, defaultValue = "10") int size){
+                                             @RequestParam(required = false, defaultValue = "60") int size){
         return assetDepreciationService.findSno(assetCodeSno, page, size);
     }
 }

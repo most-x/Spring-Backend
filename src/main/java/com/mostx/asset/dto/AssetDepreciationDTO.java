@@ -12,8 +12,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetDepreciationDTO {
-    @Schema(description = "자산 ID")
-    private Long sno;
+    @Transient
+    @Schema(description = "게시글 No")
+    private Long no;
 
     @Schema(description = "감가상각비")
     private int depreciationCost;
@@ -26,8 +27,4 @@ public class AssetDepreciationDTO {
 
     @Schema(description = "감가상각일")
     private LocalDate depreciationDate;
-
-    @Transient
-    @Schema(description = "게시글 No")
-    private Long no;
 }
