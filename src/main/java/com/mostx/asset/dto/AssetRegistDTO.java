@@ -1,26 +1,20 @@
 package com.mostx.asset.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "자산정보 응답 DTO")
-public class AssetDTO {
-    @Schema(description = "자산 ID")
-    private Long sno;
-
-    @Schema(description = "자산상태")
-    private String assetStatus;
-
+@Schema(description = "자산정보 등록 DTO")
+public class AssetRegistDTO {
     @Schema(description = "자산용도")
     private String assetUsage;
 
@@ -52,21 +46,13 @@ public class AssetDTO {
     @NotNull(message = "내용연수가 입력되지 않았습니다.")
     private Integer usefulLife;
 
-    @Schema(description = "감가상각비(당월)")
-    private Integer depreciationCurrent;
+    @Schema(description = "등록자 정보-부서명")
+    private String registDepartment;
 
-    @Schema(description = "감가상각 누계액")
-    private Integer depreciationTotalprice;
-
-    @Schema(description = "장부가액")
-    private Integer bookValue;
+    @Schema(description = "등록자 정보-성명")
+    private String registName;
 
     @Schema(description = "최초 개시일")
     private LocalDate initialStartDate;
-
-    @Schema(description = "자산 등록일자")
-    private LocalDate assetRegistDate;
-
-    @Transient
-    private Long no;
 }
+

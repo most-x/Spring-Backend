@@ -1,9 +1,6 @@
 package com.mostx.asset.service;
 
-import com.mostx.asset.dto.AssetDTO;
-import com.mostx.asset.dto.AssetDepreciationSearchDTO;
-import com.mostx.asset.dto.AssetRequestDTO;
-import com.mostx.asset.dto.AssetResearchDTO;
+import com.mostx.asset.dto.*;
 import com.mostx.asset.entity.Asset;
 import com.mostx.asset.repository.AssetRepository;
 import com.mostx.asset.response.Response;
@@ -39,11 +36,10 @@ public class AssetService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     // DTO를 Entity로 변환 후 저장 Asset 등록 Controller에서만 사용
-    private void convertToEntity(AssetDTO assetDto) {
-        Asset asset = modelMapper.map(assetDto, Asset.class);
+    private void convertToEntity(AssetRegistDTO assetRegistDTO) {
+        Asset asset = modelMapper.map(assetRegistDTO, Asset.class);
 
         asset.setAssetStatus("정상");
-        asset.setAssetUsage("구독");
         asset.setAssetRegistDate(LocalDate.now());
         asset.setBookValue(asset.getSupplyPrice());
 
@@ -60,12 +56,22 @@ public class AssetService {
         return modelMapper.map(asset, AssetDTO.class);
     }
 
+    private AssetDetailDTO convertToDetailDto(Asset asset) {
+        return modelMapper.map(asset, AssetDetailDTO.class);
+    }
+
+    private List<AssetDisposalDTO> convertToDisposalDto(Page<Asset> asset) {
+        return asset.stream()
+                .map(asset1 -> modelMapper.map(asset1, AssetDisposalDTO.class))
+                .collect(Collectors.toList());
+    }
+
     // 자산등록
     // DTO로 넘겨받은 정보를 Entity로 변환 후 저장한다.
     // return 데이터는 저장된 Entity를 DTO로 변환하여 반환한다.
     @Transactional
-    public String register(AssetDTO assetDto) {
-        convertToEntity(assetDto);
+    public String register(AssetRegistDTO assetRegistDTO) {
+        convertToEntity(assetRegistDTO);
 
         return "성공적으로 등록되었습니다.";
     }
@@ -118,31 +124,39 @@ public class AssetService {
     // 전체자산 조회
     public ResponsePageInfo findAll(int page, int size) {
         Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
-        List<AssetDTO> assetDtos = noMargin(page, size, assetPage);
+        List<AssetDTO> assetDtos = convertToDto(assetPage);
+
+        return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
+    }
+
+    // 자산처분 조회
+    public ResponsePageInfo findDisposalAll(int page, int size) {
+        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
+        List<AssetDisposalDTO> assetDtos = noMargin(page, size, assetPage);
 
         return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
 
     // 자산 sno 기준으로 조회
-    public AssetDTO findAsset(Long sno) {
+    public AssetDetailDTO findAsset(Long sno) {
         Asset idAsset = assetRepository.findBySno(sno).orElseThrow(() -> {
             return new IllegalArgumentException("Asset ID를 찾을 수 없습니다.");
         });
 
-        return convertToDto(idAsset);
+        return convertToDetailDto(idAsset);
     }
 
     // 자산코드 기준으로 조회
-    public AssetDTO findAssetCode(String wrmsAssetCode){
+    public AssetDetailDTO findAssetCode(String wrmsAssetCode){
         Asset codeAsset = assetRepository.findByWrmsAssetCode(wrmsAssetCode).orElseThrow(()->{
             return new EntityNotFoundException("자산코드로 등록된 자산이 없습니다.");
         });
 
-        return convertToDto(codeAsset);
+        return convertToDetailDto(codeAsset);
     }
 
     // 자산 감가상각 현황 조회 (건별 자산 조회)
-    public Response<List<AssetDTO>> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto) {
+    public Response<List<AssetDetailDTO>> findAssetDepreciationSearch(AssetDepreciationSearchDTO assetDepreciationSearchDto) {
         List<Asset> assetDepreciationSearchDtoList = jpaQueryFactory
                 .selectFrom(asset)
                 .where(assetSearch(assetDepreciationSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDepreciationSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
@@ -150,7 +164,7 @@ public class AssetService {
                         assetSearch(assetDepreciationSearchDto.getProductName(), asset.productName))
                 .fetch();
 
-        List<AssetDTO> assetDtoList = assetDepreciationSearchDtoList.stream().map(this::convertToDto).toList();
+        List<AssetDetailDTO> assetDtoList = assetDepreciationSearchDtoList.stream().map(this::convertToDetailDto).toList();
 
         return new Response<>(assetDtoList);
     }
@@ -161,7 +175,7 @@ public class AssetService {
                 .selectFrom(asset)
                 .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
                         assetSearch(assetResearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetResearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetResearchDto.getProductName(), asset.productName),
-                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getStartPrice(), assetResearchDto.getEndPrice()),
+                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getMinPrice(), assetResearchDto.getMaxPrice()),
                         initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
                         currentMonthBetween(assetResearchDto.getPriceType()))
                 .fetch();
@@ -172,7 +186,29 @@ public class AssetService {
 
         // List로 검색된 데이터 Page로 변환
         Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
-        List<AssetDTO> resultDto = noMargin(page, size, assetPage);
+        List<AssetDTO> resultDto = convertToDto(assetPage);
+
+        return new ResponsePageInfo<>(resultDto, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
+    }
+
+    // 자산 처분에 대하여 검색조건을 기반으로 조회
+    public ResponsePageInfo findDisposalSearchAsset(AssetResearchDTO assetResearchDto, int page, int size) {
+        List<Asset> searchAsset = jpaQueryFactory
+                .selectFrom(asset)
+                .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetResearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetResearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetResearchDto.getProductName(), asset.productName),
+                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getMinPrice(), assetResearchDto.getMaxPrice()),
+                        initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
+                        currentMonthBetween(assetResearchDto.getPriceType()))
+                .fetch();
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
+
+        // List로 검색된 데이터 Page로 변환
+        Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
+        List<AssetDisposalDTO> resultDto = noMargin(page, size, assetPage);
 
         return new ResponsePageInfo<>(resultDto, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
@@ -237,14 +273,14 @@ public class AssetService {
 
     // 사용API 리스트 - 자산 전체조회, 자산 검색조건 조회
     // 자산리스트 no, 손익액, 이익률 계산 메서드
-    private List<AssetDTO> noMargin(int page, int size, Page<Asset> assetPage) {
-        List<AssetDTO> assetDtos = convertToDto(assetPage);
+    private List<AssetDisposalDTO> noMargin(int page, int size, Page<Asset> assetPage) {
+        List<AssetDisposalDTO> assetDtos = convertToDisposalDto(assetPage);
 
         Long no;
         int saleMargin = 0, saleMarginRate = 0;
 
         // 자산조회 시 자산별로 페이지 NO 세팅
-        for (AssetDTO asset1 : assetDtos) {
+        for (AssetDisposalDTO asset1 : assetDtos) {
             no = assetPage.getTotalElements() - ((long) (page - 1) * size) - assetDtos.indexOf(asset1);
 
             // 매각금액이 null이 아닐 경우 손익액 및 이익률 계산
@@ -265,7 +301,6 @@ public class AssetService {
 
             asset1.setSaleMargin(saleMargin);
             asset1.setSaleMarginRate(saleMarginRate);
-            asset1.setNo(no);
 
             // 손익액, 이익률 0으로 초기화
             saleMargin = 0;

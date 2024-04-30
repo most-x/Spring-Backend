@@ -30,10 +30,10 @@ public class AssetResearchDTO {
     private String priceType;
 
     @Schema(description = "최소금액")
-    private Integer startPrice;
+    private Integer minPrice;
 
     @Schema(description = "최대금액")
-    private Integer endPrice;
+    private Integer maxPrice;
 
     @Schema(description = "창고번호")
     private String warehouseNumber;

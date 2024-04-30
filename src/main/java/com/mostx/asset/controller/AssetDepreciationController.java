@@ -56,10 +56,23 @@ public class AssetDepreciationController {
         return assetService.findAll(page, size);
     }
 
+    @Operation(summary = "자산 처분 조회", description = "자산을 전체 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/disposal")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = {@Content(schema = @Schema(implementation = AssetDTO.class))}),
+            @ApiResponse(responseCode = "404", description = "자산정보가 존재하지 않습니다."),
+    })
+    public ResponsePageInfo findDisposalAll(@RequestParam(required = false, defaultValue = "1") int page,
+                                            @RequestParam(required = false, defaultValue = "10") int size) {
+        return assetService.findDisposalAll(page, size);
+    }
+
     // sno으로 자산조회
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public AssetDTO findAsset(@PathVariable("id") Long id){
+    public AssetDetailDTO findAsset(@PathVariable("id") Long id){
         return assetService.findAsset(id);
     }
 
@@ -67,7 +80,7 @@ public class AssetDepreciationController {
     @Operation(summary = "건별자산조회 검색", description = "검색내용과 일치하는 건별자산 리스트를 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/asset-depreciation-search")
-    public Response<List<AssetDTO>> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto){
+    public Response<List<AssetDetailDTO>> findAssetDepreciationSearch(@ModelAttribute AssetDepreciationSearchDTO assetDepreciationSearchDto){
         return assetService.findAssetDepreciationSearch(assetDepreciationSearchDto);
     }
 
@@ -77,7 +90,7 @@ public class AssetDepreciationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assets/asset-code/{wrmsAssetCode}")
     @Parameter(name="wrmsAssetCode", description = "WRMS 자산코드", example = "TEST000000001")
-    public AssetDTO findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
+    public AssetDetailDTO findAssetCode(@PathVariable("wrmsAssetCode") String wrmsAssetCode){
         return  assetService.findAssetCode(wrmsAssetCode);
     }
 
@@ -85,8 +98,8 @@ public class AssetDepreciationController {
     @Operation(summary = "자산등록", description = "WRMS에 등록된 자산을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/asset-regist")
-    public String register(@RequestBody @Valid AssetDTO assetDto){
-        return assetService.register(assetDto);
+    public String register(@RequestBody @Valid AssetRegistDTO assetRegitsDTO){
+        return assetService.register(assetRegitsDTO);
     }
 
     // 자산 매각 및 폐기를 위한 API
@@ -104,6 +117,14 @@ public class AssetDepreciationController {
                                             @RequestParam(required = false, defaultValue = "1") int page,
                                             @RequestParam(required = false, defaultValue = "10") int size) {
         return assetService.findSearchAsset(assetResearchDto, page, size);
+    }
+
+    // 자산 처분 검색 API (검색조건을 사용)
+    @GetMapping("/asset-disposal-search")
+    public ResponsePageInfo findDisposalSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto,
+                                                    @RequestParam(required = false, defaultValue = "1") int page,
+                                                    @RequestParam(required = false, defaultValue = "10") int size) {
+        return assetService.findDisposalSearchAsset(assetResearchDto, page, size);
     }
 
     // assetSno으로 감가상각 조회
