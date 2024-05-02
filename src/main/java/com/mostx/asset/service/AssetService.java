@@ -177,14 +177,13 @@ public class AssetService {
     }
 
     // 전체 자산에 대하여 검색조건을 기반으로 조회
-    public ResponsePageInfo findSearchAsset(AssetResearchDTO assetResearchDto, int page, int size) {
+    public ResponsePageInfo findSearchAsset(AssetSearchDTO assetSearchDto, int page, int size) {
         List<Asset> searchAsset = jpaQueryFactory
                 .selectFrom(asset)
-                .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
-                        assetSearch(assetResearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetResearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetResearchDto.getProductName(), asset.productName),
-                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getMinPrice(), assetResearchDto.getMaxPrice()),
-                        initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
-                        currentMonthBetween(assetResearchDto.getPriceType()))
+                .where(assetSearch(assetSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetSearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetSearchDto.getProductName(), asset.productName),
+                        assetSearch(assetSearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetSearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetSearchDto.getPriceType(), assetSearchDto.getMinPrice(), assetSearchDto.getMaxPrice()),
+                        currentMonthBetween(assetSearchDto.getDateType(), assetSearchDto.getStartDate(), assetSearchDto.getEndDate()))
                 .fetch();
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
@@ -199,14 +198,13 @@ public class AssetService {
     }
 
     // 자산 처분에 대하여 검색조건을 기반으로 조회
-    public ResponsePageInfo findDisposalSearchAsset(AssetResearchDTO assetResearchDto, int page, int size) {
+    public ResponsePageInfo findDisposalSearchAsset(AssetDisposalSearchDTO assetDisposalSearchDto, int page, int size) {
         List<Asset> searchAsset = jpaQueryFactory
                 .selectFrom(asset)
-                .where(assetSearch(assetResearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetResearchDto.getWrmsItemCode(), asset.wrmsItemCode),
-                        assetSearch(assetResearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetResearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetResearchDto.getProductName(), asset.productName),
-                        assetSearch(assetResearchDto.getAssetStatus(), asset.assetStatus), assetSearch(assetResearchDto.getAssetUsage(), asset.assetUsage), priceBetween(assetResearchDto.getPriceType(), assetResearchDto.getMinPrice(), assetResearchDto.getMaxPrice()),
-                        initialStartDateEq(assetResearchDto.getInitialStartDate()), assetSearch(assetResearchDto.getWarehouseNumber(), asset.warehouseNumber),
-                        currentMonthBetween(assetResearchDto.getPriceType()))
+                .where(assetSearch(assetDisposalSearchDto.getWrmsAssetCode(), asset.wrmsAssetCode), assetSearch(assetDisposalSearchDto.getWrmsItemCode(), asset.wrmsItemCode),
+                        assetSearch(assetDisposalSearchDto.getIlsangProductCode(), asset.ilsangProductCode), assetSearch(assetDisposalSearchDto.getSerialNumber(), asset.serialNumber), assetSearch(assetDisposalSearchDto.getProductName(), asset.productName),
+                        assetSearch(assetDisposalSearchDto.getAssetStatus(), asset.assetStatus), priceBetween(assetDisposalSearchDto.getPriceType(), assetDisposalSearchDto.getMinPrice(), assetDisposalSearchDto.getMaxPrice()),
+                        currentMonthBetween(assetDisposalSearchDto.getDateType(), assetDisposalSearchDto.getStartDate(), assetDisposalSearchDto.getEndDate()))
                 .fetch();
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
@@ -226,29 +224,28 @@ public class AssetService {
 
     /**
      * @param priceType  - vatPlus(발주단가 VAT+), vatMinus(발주단가 VAT-), depreCost(감가상각비(당월)), accumDepre(감가상각 누계액), bookValue(장부가액)
-     * @param startPrice
-     * @param endPrice
+     * @param minPrice
+     * @param maxPrice
      * @return
      */
-    private BooleanExpression priceBetween(String priceType, Integer startPrice, Integer endPrice) {
+    private BooleanExpression priceBetween(String priceType, Integer minPrice, Integer maxPrice) {
         NumberPath<Integer> assetType;
 
         switch (priceType != null ? priceType : "NULL") {
-            case "vatPlus" -> assetType = asset.totalPrice;
-            case "vatMinus" -> assetType = asset.supplyPrice;
-            case "depreCost" -> assetType = assetDepreciation.depreciationCost;
-            case "accumDepre" -> assetType = assetDepreciation.accumlatedDepreciation;
-            case "bookValue" -> assetType = assetDepreciation.bookValue;
+            case "supplyPrice" -> assetType = asset.supplyPrice;
+            case "depreciationCost" -> assetType = asset.depreciationCurrent;
+            case "accumlatedDepreciation" -> assetType = asset.depreciationTotalprice;
+            case "bookValue" -> assetType = asset.bookValue;
             default -> assetType = null;
         }
 
         if(assetType != null) {
-            if (startPrice != null && endPrice != null) {
-                return assetType.between(startPrice, endPrice);
-            } else if (startPrice != null) {
-                return assetType.goe(startPrice);
-            } else if (endPrice != null) {
-                return assetType.loe(endPrice);
+            if (minPrice != null && maxPrice != null) {
+                return assetType.between(minPrice, maxPrice);
+            } else if (minPrice != null) {
+                return assetType.goe(minPrice);
+            } else if (maxPrice != null) {
+                return assetType.loe(maxPrice);
             } else {
                 return null;
             }
@@ -257,22 +254,13 @@ public class AssetService {
         }
     }
 
-    private BooleanExpression initialStartDateEq(LocalDate initialStartDate) {
-        return initialStartDate != null ? asset.initialStartDate.eq(initialStartDate) : null;
-    }
-
-    /**
-     * 감가상각 데이터는 당월을 기준으로 조회 따라서 startDay between today (Ex. 2023-12-01 ~ 2023-12-15)
-     * today = 현재날짜
-     * startDay = 당월 1일 세팅
-     * @return
-     */
-    private BooleanExpression currentMonthBetween(String priceType) {
-        if(priceType != null) {
-            LocalDate today = LocalDate.now();
-            LocalDate startDay = today.withDayOfMonth(1);
-
-            return assetDepreciation.depreciationDate.between(startDay, today);
+    private BooleanExpression currentMonthBetween(String dateType, LocalDate startDate, LocalDate endDate) {
+        if(dateType != null) {
+            if(dateType.equals("assetRegistDate")){
+                return asset.assetRegistDate.between(startDate, endDate);
+            } else {
+                return asset.initialStartDate.between(startDate, endDate);
+            }
         } else {
             return null;
         }

@@ -15,14 +15,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/assets")
@@ -61,7 +57,7 @@ public class AssetDepreciationController {
     @GetMapping("/disposal")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(schema = @Schema(implementation = AssetDTO.class))}),
+                    content = {@Content(schema = @Schema(implementation = AssetDisposalDTO.class))}),
             @ApiResponse(responseCode = "404", description = "자산정보가 존재하지 않습니다."),
     })
     public ResponsePageInfo findDisposalAll(@RequestParam(required = false, defaultValue = "1") int page,
@@ -113,18 +109,18 @@ public class AssetDepreciationController {
 
     // 전체 자산 검색 API (검색조건을 사용)
     @GetMapping("/asset-search")
-    public ResponsePageInfo findSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto,
+    public ResponsePageInfo findSearchAsset(@ModelAttribute AssetSearchDTO assetSearchDto,
                                             @RequestParam(required = false, defaultValue = "1") int page,
                                             @RequestParam(required = false, defaultValue = "10") int size) {
-        return assetService.findSearchAsset(assetResearchDto, page, size);
+        return assetService.findSearchAsset(assetSearchDto, page, size);
     }
 
     // 자산 처분 검색 API (검색조건을 사용)
     @GetMapping("/asset-disposal-search")
-    public ResponsePageInfo findDisposalSearchAsset(@ModelAttribute AssetResearchDTO assetResearchDto,
+    public ResponsePageInfo findDisposalSearchAsset(@ModelAttribute AssetDisposalSearchDTO assetDisposalSearchDto,
                                                     @RequestParam(required = false, defaultValue = "1") int page,
                                                     @RequestParam(required = false, defaultValue = "10") int size) {
-        return assetService.findDisposalSearchAsset(assetResearchDto, page, size);
+        return assetService.findDisposalSearchAsset(assetDisposalSearchDto, page, size);
     }
 
     // assetSno으로 감가상각 조회
