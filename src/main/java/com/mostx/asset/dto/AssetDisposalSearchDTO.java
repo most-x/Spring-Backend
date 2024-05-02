@@ -29,7 +29,7 @@ public class AssetDisposalSearchDTO {
     @Schema(description = "자산상태")
     private String assetStatus;
 
-    @Schema(description = "금액유형")
+    @Schema(description = "공급가: supplyPrice, 감가상각비(당월): depreciationCost, 감가상각누계액: depreciationTotalprice, 장부가액: bookValue")
     private String priceType;
 
     @Schema(description = "최소금액")
@@ -38,7 +38,7 @@ public class AssetDisposalSearchDTO {
     @Schema(description = "최대금액")
     private Integer maxPrice;
 
-    @Schema(description = "검색일 유형")
+    @Schema(description = "최초등록일자: assetRegistDate, 최초개시일자: initialStartDate")
     private String dateType;
 
     @Schema(description = "시작일")

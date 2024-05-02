@@ -234,7 +234,7 @@ public class AssetService {
         switch (priceType != null ? priceType : "NULL") {
             case "supplyPrice" -> assetType = asset.supplyPrice;
             case "depreciationCost" -> assetType = asset.depreciationCurrent;
-            case "accumlatedDepreciation" -> assetType = asset.depreciationTotalprice;
+            case "depreciationTotalprice" -> assetType = asset.depreciationTotalprice;
             case "bookValue" -> assetType = asset.bookValue;
             default -> assetType = null;
         }
