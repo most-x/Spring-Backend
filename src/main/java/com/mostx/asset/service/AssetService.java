@@ -260,6 +260,8 @@ public class AssetService {
                 return asset.assetRegistDate.between(startDate, endDate);
             } else {
                 return asset.initialStartDate.between(startDate, endDate);
+            } else {
+                return null;
             }
         } else {
             return null;
