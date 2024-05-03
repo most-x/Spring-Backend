@@ -258,7 +258,7 @@ public class AssetService {
         if(dateType != null) {
             if(dateType.equals("assetRegistDate")){
                 return asset.assetRegistDate.between(startDate, endDate);
-            } else {
+            } else if(dateType.equals("initailStartDate")) {
                 return asset.initialStartDate.between(startDate, endDate);
             } else {
                 return null;
