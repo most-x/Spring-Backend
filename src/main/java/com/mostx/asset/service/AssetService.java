@@ -189,10 +189,18 @@ public class AssetService {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
+        Long no;
 
         // List로 검색된 데이터 Page로 변환
         Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
         List<AssetDTO> resultDto = convertToDto(assetPage);
+
+
+        for (AssetDTO asset1 : resultDto) {
+            no = assetPage.getTotalElements() - ((long) (page - 1) * size) - resultDto.indexOf(asset1);
+
+            asset1.setNo(no);
+        }
 
         return new ResponsePageInfo<>(resultDto, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
     }
