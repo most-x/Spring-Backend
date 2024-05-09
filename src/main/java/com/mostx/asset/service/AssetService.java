@@ -40,6 +40,9 @@ public class AssetService {
         Asset asset = modelMapper.map(assetRegistDTO, Asset.class);
 
         asset.setAssetStatus("정상");
+        if (assetRegistDTO.getAssetUsage() == null) {
+            asset.setAssetUsage("구독");
+        }
         asset.setAssetRegistDate(LocalDate.now());
         asset.setBookValue(asset.getSupplyPrice());
 
