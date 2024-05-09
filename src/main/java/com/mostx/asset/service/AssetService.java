@@ -49,6 +49,10 @@ public class AssetService {
         assetRepository.save(asset);
     }
 
+    public boolean isDuplicate(AssetRegistDTO assetRegistDTO) {
+        return assetRepository.findByWrmsAssetCode(assetRegistDTO.getWrmsAssetCode()).isPresent();
+    }
+
     private List<AssetDTO> convertToDto(Page<Asset> asset) {
         return asset.stream()
                 .map(asset1 -> modelMapper.map(asset1, AssetDTO.class))
@@ -74,6 +78,10 @@ public class AssetService {
     // return 데이터는 저장된 Entity를 DTO로 변환하여 반환한다.
     @Transactional
     public String register(AssetRegistDTO assetRegistDTO) {
+        if (isDuplicate(assetRegistDTO)) {
+            return "이미 등록된 자산코드입니다.";
+        }
+
         convertToEntity(assetRegistDTO);
 
         return "성공적으로 등록되었습니다.";
