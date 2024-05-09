@@ -282,9 +282,9 @@ public class AssetService {
     }
 
     private BooleanExpression currentMonthBetween(String dateType, LocalDate startDate, LocalDate endDate) {
-        if (dateType.equals("assetRegistDate")) {
+        if ("assetRegistDate".equals(dateType)) {
             return asset.assetRegistDate.between(startDate, endDate);
-        } else if (dateType.equals("initailStartDate")) {
+        } else if ("initailStartDate".equals(dateType)) {
             return asset.initialStartDate.between(startDate, endDate);
         } else {
             return null;
