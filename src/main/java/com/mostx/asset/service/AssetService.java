@@ -17,10 +17,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -134,7 +136,7 @@ public class AssetService {
 
     // 전체자산 조회
     public ResponsePageInfo findAll(int page, int size) {
-        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
+        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size, Sort.by("sno").descending()));
         List<AssetDTO> assetDtos = convertToDto(assetPage);
         Long no;
 
@@ -149,7 +151,7 @@ public class AssetService {
 
     // 자산처분 조회
     public ResponsePageInfo findDisposalAll(int page, int size) {
-        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size));
+        Page<Asset> assetPage = assetRepository.findAll(PageRequest.of(page - 1, size, Sort.by("sno").descending()));
         List<AssetDisposalDTO> assetDtos = noMargin(page, size, assetPage);
 
         return new ResponsePageInfo<>(assetDtos, assetPage.getTotalElements(), (long) assetPage.getTotalPages());
@@ -202,6 +204,9 @@ public class AssetService {
         int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
         Long no;
 
+        //sno 기준 역순정렬
+        searchAsset.sort(Comparator.comparing(Asset::getSno).reversed());
+
         // List로 검색된 데이터 Page로 변환
         Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
         List<AssetDTO> resultDto = convertToDto(assetPage);
@@ -229,6 +234,9 @@ public class AssetService {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), searchAsset.size());
+
+        //sno 기준 역순정렬
+        searchAsset.sort(Comparator.comparing(Asset::getSno).reversed());
 
         // List로 검색된 데이터 Page로 변환
         Page<Asset> assetPage = new PageImpl<>(searchAsset.subList(start, end), pageRequest, searchAsset.size());
@@ -274,14 +282,10 @@ public class AssetService {
     }
 
     private BooleanExpression currentMonthBetween(String dateType, LocalDate startDate, LocalDate endDate) {
-        if(dateType != null) {
-            if(dateType.equals("assetRegistDate")){
-                return asset.assetRegistDate.between(startDate, endDate);
-            } else if(dateType.equals("initailStartDate")) {
-                return asset.initialStartDate.between(startDate, endDate);
-            } else {
-                return null;
-            }
+        if (dateType.equals("assetRegistDate")) {
+            return asset.assetRegistDate.between(startDate, endDate);
+        } else if (dateType.equals("initailStartDate")) {
+            return asset.initialStartDate.between(startDate, endDate);
         } else {
             return null;
         }
