@@ -283,9 +283,25 @@ public class AssetService {
 
     private BooleanExpression currentMonthBetween(String dateType, LocalDate startDate, LocalDate endDate) {
         if ("assetRegistDate".equals(dateType)) {
-            return asset.assetRegistDate.between(startDate, endDate);
-        } else if ("initailStartDate".equals(dateType)) {
-            return asset.initialStartDate.between(startDate, endDate);
+            if (startDate != null && endDate != null) {
+                return asset.assetRegistDate.between(startDate, endDate);
+            } else if (startDate != null) {
+                return asset.assetRegistDate.goe(startDate);
+            } else if (endDate != null) {
+                return asset.assetRegistDate.loe(endDate);
+            } else {
+                return null;
+            }
+        } else if ("initialStartDate".equals(dateType)) {
+            if(startDate != null && endDate != null) {
+                return asset.initialStartDate.between(startDate, endDate);
+            } else if (startDate != null) {
+                return asset.initialStartDate.goe(startDate);
+            } else if (endDate != null) {
+                return asset.initialStartDate.loe(endDate);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
