@@ -29,7 +29,7 @@ public class AssetDisposalSearchDTO {
     @Schema(description = "자산상태")
     private String assetStatus;
 
-    @Schema(description = "공급가: supplyPrice, 감가상각비(당월): depreciationCost, 감가상각누계액: depreciationTotalprice, 장부가액: bookValue")
+    @Schema(description = "장부가액: bookValue, 감가상각누계액: depreciationTotalprice, 매각금액: saleAmount, 폐기금액: disposalAmount")
     private String priceType;
 
     @Schema(description = "최소금액")

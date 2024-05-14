@@ -39,7 +39,7 @@ public class DashboardRepository {
                                 startDateNotOpen.sum(),
                                 asset.depreciationTotalprice.sum(),
                                 asset.bookValue.sum(),
-                                asset.totalPrice.sum()
+                                asset.supplyPrice.sum()
                         )
                 )
                 .from(asset)

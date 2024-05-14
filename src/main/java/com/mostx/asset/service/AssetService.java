@@ -66,6 +66,7 @@ public class AssetService {
     }
 
     private AssetDetailDTO convertToDetailDto(Asset asset) {
+
         return modelMapper.map(asset, AssetDetailDTO.class);
     }
 
@@ -250,7 +251,8 @@ public class AssetService {
     }
 
     /**
-     * @param priceType  - vatPlus(발주단가 VAT+), vatMinus(발주단가 VAT-), depreCost(감가상각비(당월)), accumDepre(감가상각 누계액), bookValue(장부가액)
+     * @param priceType  - supplyPrice(공급가), depreciationCurrent(감가상각비(당월)), depreciationTotalprice(감가상각 누계액), bookValue(장부가액),
+     *                   saleAmount(매각금액), disposalAmount(폐기금액)
      * @param minPrice
      * @param maxPrice
      * @return
@@ -263,6 +265,8 @@ public class AssetService {
             case "depreciationCost" -> assetType = asset.depreciationCurrent;
             case "depreciationTotalprice" -> assetType = asset.depreciationTotalprice;
             case "bookValue" -> assetType = asset.bookValue;
+            case "saleAmount" -> assetType = asset.saleAmount;
+            case "disposalAmount" -> assetType = asset.disposalAmount;
             default -> assetType = null;
         }
 
