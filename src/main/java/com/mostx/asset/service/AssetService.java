@@ -345,6 +345,12 @@ public class AssetService {
                 }
             }
 
+            if (asset1.getDepreciationTotalprice() != null) {
+                asset1.setModifiedYn("N");
+            } else {
+                asset1.setModifiedYn("Y");
+            }
+
             asset1.setSaleMargin(saleMargin);
             asset1.setSaleMarginRate(saleMarginRate);
 
