@@ -66,8 +66,14 @@ public class AssetService {
     }
 
     private AssetDetailDTO convertToDetailDto(Asset asset) {
+        AssetDetailDTO assetDetailDto = modelMapper.map(asset, AssetDetailDTO.class);
+        if (asset.getDepreciationCurrent() != null) {
+            assetDetailDto.setModifiedYn("N");
+        } else {
+            assetDetailDto.setModifiedYn("Y");
+        }
 
-        return modelMapper.map(asset, AssetDetailDTO.class);
+        return assetDetailDto;
     }
 
     private List<AssetDisposalDTO> convertToDisposalDto(Page<Asset> asset) {

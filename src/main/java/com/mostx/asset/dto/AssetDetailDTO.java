@@ -70,5 +70,8 @@ public class AssetDetailDTO {
 
     @Schema(description = "폐기금액")
     private Integer disposalAmount;
+
+    @Schema(description = "자산개시일 수정가능여부 Y: 수정가능, N: 수정불가능")
+    private String modifiedYn;
 }
 
