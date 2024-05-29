@@ -323,7 +323,8 @@ public class AssetService {
         List<AssetDisposalDTO> assetDtos = convertToDisposalDto(assetPage);
 
         Long no;
-        int saleMargin = 0, saleMarginRate = 0;
+        int saleMargin = 0;
+        double saleMarginRate = 0;
 
         // 자산조회 시 자산별로 페이지 NO 세팅
         for (AssetDisposalDTO asset1 : assetDtos) {
@@ -336,8 +337,10 @@ public class AssetService {
 
                 // 장부가액이 0이 아닐 경우 이익률 계산
                 // 이익률 = 손익액 / 장부가액 * 100
+                // 소수점 1번째 자리 Math.round(result * 10) / 10.0
+                // result = (((double) saleMargin / asset1.getBookValue()) * 100)
                 if (asset1.getBookValue() != 0) {
-                    saleMarginRate = (int) Math.ceil(((double) saleMargin / asset1.getBookValue()) * 100);
+                    saleMarginRate = Math.round((((double) saleMargin / asset1.getBookValue()) * 100) * 10) / 10.0;
                 } else {
                     // 장부가액이 0일 경우
                     // 이익률 계산불가, 이익률 100퍼로 고정

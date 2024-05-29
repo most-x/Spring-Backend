@@ -66,7 +66,7 @@ public class AssetDisposalDTO {
 
     @Schema(description = "매각이익률")
     @Transient
-    private int saleMarginRate;
+    private double saleMarginRate;
 
     @Schema(description = "자산개시일 수정가능여부 Y: 수정가능, N: 수정불가능")
     private String modifiedYn;
