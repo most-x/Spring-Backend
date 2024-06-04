@@ -17,7 +17,7 @@ public class SchedulerService {
     private final AssetService assetService;
     private final AssetDepreciationService assetDepreciationService;
 
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 20 9 * * *")
     public void run() {
         List<Asset> assets = scheduleRepository.findAll();
         List<AssetDepreciation> assetDepreciation;
