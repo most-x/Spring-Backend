@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 application-dev.properties
+logback-local.properties
 
 .idea
 *.iws

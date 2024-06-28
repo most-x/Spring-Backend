@@ -1,0 +1,6 @@
+== 만족도조사 등록 API
+operation::servey-controller-test/servey-create-test[snippets="request-fields,http-request,http-response"]
+== 암호화데이터 복호화 API
+operation::servey-controller-test/decrypt-test[snippets="query-parameters,response-fields,http-request,http-response"]
+== 만족도 조사 검색 API
+operation::servey-controller-test/servey-search-find-test[snippets="query-parameters,http-request,http-response"]
