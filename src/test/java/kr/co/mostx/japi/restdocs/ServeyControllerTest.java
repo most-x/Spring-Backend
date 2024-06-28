@@ -38,7 +38,7 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
         input.put("userPhone", "01000000000");
         input.put("consultantName", "강성민");
         input.put("platform", "WRMS");
-        input.put("serveyNumber", "CO0000000017");
+        input.put("serveyNumber", "CO0000000019");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
                 .contentType(MediaType.APPLICATION_JSON)
