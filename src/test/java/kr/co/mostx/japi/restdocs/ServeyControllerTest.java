@@ -106,11 +106,11 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
                                 parameterWithName("searchType").optional().description("검색유형").attributes(field("constraints", "serveyNumber: 상담번호" + "\n" + "userName: 상담자명 " + "\n" + " userPhone: 상담자번호")),
                                 parameterWithName("searchWord").optional().description("검색어"),
                                 parameterWithName("platform").optional().description("인입경로").attributes(field("constraints", "WRMS, ILSANG")),
-                                parameterWithName("scoreType").optional().description("점수유형").attributes(field("contraints", "totalScore: 총점" + "\n" + "avgScore: 평균")),
+                                parameterWithName("scoreType").optional().description("점수유형").attributes(field("constraints", "totalScore: 총점" + "\n" + "avgScore: 평균")),
                                 parameterWithName("minScore").optional().description("최소점수"),
                                 parameterWithName("maxScore").optional().description("최대점수"),
-                                parameterWithName("pageNumber").optional().description("페이지 번호").attributes(field("contranints", "Default Number : 1")),
-                                parameterWithName("pageSize").optional().description("페이지 사이즈").attributes(field("contranints", "Default Size : 10"))
+                                parameterWithName("pageNumber").optional().description("페이지 번호").attributes(field("constraints", "Default Number : 1")),
+                                parameterWithName("pageSize").optional().description("페이지 사이즈").attributes(field("constraints", "Default Size : 10"))
                         )
                 ));
     }
