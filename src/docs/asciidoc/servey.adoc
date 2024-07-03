@@ -6,3 +6,13 @@ operation::servey-controller-test/decrypt-test[snippets="query-parameters,respon
 operation::servey-controller-test/servey-search-find-test[snippets="query-parameters,http-request,http-response"]
 == 엑셀 다운로드 API
 operation::servey-controller-test/excel-download-test[snippets="query-parameters,http-request,http-response"]
+== 주간 통계 데이터 API
+operation::servey-controller-test/weekly-statics-test[snippets="http-request,http-response"]
+== 월간 통계 데이터 API
+operation::servey-controller-test/monthly-statics-test[snippets="http-request,http-response"]
+== 점수 통계 데이터 API
+operation::servey-controller-test/score-statics-test[snippets="http-request,http-response"]
+== 상담사 통계 데이터 API
+operation::servey-controller-test/consultant-statics-test[snippets="http-request,http-response"]
+== 전일 통계 데이터 API
+operation::servey-controller-test/daily-statics-test[snippets="http-request,http-response"]

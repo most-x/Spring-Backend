@@ -49,6 +49,32 @@ public class ServeyController {
         return serveyService.findSearchServey(serveySearchDto, sortType, pageNumber, pageSize);
     }
 
+    @GetMapping("/weekly-statics")
+    @ResponseBody
+    public ServeyResponse weeklyStaticsServey() {
+        return serveyService.weeklyData();
+    }
+
+    @GetMapping("/monthly-statics")
+    public ServeyResponse monthlyStaticsServey() {
+        return serveyService.monthlyData();
+    }
+
+    @GetMapping("/score-statics")
+    public ServeyResponse scoreStaticsServey() {
+        return serveyService.scoreData();
+    }
+
+    @GetMapping("/consultant-statics")
+    public ServeyResponse consultantStaticsServey() {
+        return serveyService.consultantData();
+    }
+
+    @GetMapping("/daily-statics")
+    public ServeyResponse dailyStaticsServey() {
+        return serveyService.dailyData();
+    }
+
     @GetMapping("/excel/download")
     public void excelDownload(HttpServletResponse response, @ModelAttribute ServeySearchDto serveySearchDto) throws Throwable{
         List<ServeyDto> serveyList = serveyService.findExcelDownload(serveySearchDto);

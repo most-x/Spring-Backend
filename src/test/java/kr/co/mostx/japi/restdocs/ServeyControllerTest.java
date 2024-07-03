@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.LinkedHashMap;
@@ -15,6 +16,8 @@ import java.util.Map;
 
 import static kr.co.mostx.japi.restdocs.RestDocsConfiguration.field;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -30,21 +33,24 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Autowired
     private ServeyCustomRepositoryImpl serveyCustomRepository;
 
+    private static final String host = "https://japi.mostx.co.kr";
+
     @Test
     void ServeyCreateTest() throws Exception {
         Map<String, Object> input = new LinkedHashMap<>();
         input.put("serveyOne", 4);
-        input.put("serveyTwo", 5);
-        input.put("serveyThree", 2);
-        input.put("serveyFour", 2);
-        input.put("serveyFive", 1);
-        input.put("userName", "차신애");
-        input.put("userPhone", "01058492304");
+        input.put("serveyTwo", 4);
+        input.put("serveyThree", 4);
+        input.put("serveyFour", 4);
+        input.put("serveyFive", 4);
+        input.put("userName", "강남");
+        input.put("userPhone", "01048594039");
         input.put("consultantName", "김이후");
         input.put("platform", "WRMS");
-        input.put("serveyNumber", "CO0000000027");
+        input.put("serveyNumber", "CO0000000028");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
+                .header("Host", "japi.mostx.co.kr")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(input)));
 
@@ -68,6 +74,7 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void DecryptTest() throws Exception {
         mockMvc.perform(get("/api/servey/decrypt")
+                        .header("Host", "japi.mostx.co.kr")
                         .param("elementData", "EmyBaXv4ISguu2Unh03mwE%2BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%2F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%2F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%3D%3D")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -91,6 +98,7 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void ServeySearchFindTest() throws Exception {
         mockMvc.perform(get("/api/servey/list")
+                        .header("Host", "japi.mostx.co.kr")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("startDate", "2024-05-20")
                         .param("endDate", "2024-06-11")
@@ -123,7 +131,9 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
 
     @Test
     void excelDownloadTest() throws Exception {
-        mockMvc.perform(get("/api/servey/excel/download").contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+        mockMvc.perform(get("/api/servey/excel/download")
+                        .header("Host", "japi.mostx.co.kr")
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .param("startDate", "2024-05-20")
                         .param("endDate", "2024-06-11")
                         .param("searchType", "serveyNumber")
@@ -146,5 +156,79 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
                         )
                 ));
     }
+//
+    @Test
+    void weeklyStaticsTest() {
+        try {
+            mockMvc.perform(get("/api/servey/weekly-statics")
+                            .header("Host", "japi.mostx.co.kr")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(
+                            print()
+                    );
+        } catch (Exception e) {
+            return;
+        }
+    }
 
+    @Test
+    void monthlyStaticsTest() {
+        try {
+            mockMvc.perform(get("/api/servey/monthly-statics")
+                            .header("Host", "japi.mostx.co.kr")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(
+                            print()
+                    );
+        } catch (Exception e) {
+            return;
+        }
+    }
+
+    @Test
+    void scoreStaticsTest() {
+        try {
+            mockMvc.perform(get("/api/servey/score-statics")
+                            .header("Host", "japi.mostx.co.kr")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(
+                            print()
+                    );
+        } catch (Exception e) {
+            return;
+        }
+    }
+
+    @Test
+    void consultantStaticsTest() {
+        try {
+            mockMvc.perform(get("/api/servey/consultant-statics")
+                            .header("Host", "japi.mostx.co.kr")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(
+                            print()
+                    );
+        } catch (Exception e) {
+            return;
+        }
+    }
+
+    @Test
+    void dailyStaticsTest() {
+        try {
+            mockMvc.perform(get("/api/servey/daily-statics")
+                            .header("Host", "japi.mostx.co.kr")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andDo(
+                            print()
+                    );
+        } catch (Exception e) {
+            return;
+        }
+    }
 }

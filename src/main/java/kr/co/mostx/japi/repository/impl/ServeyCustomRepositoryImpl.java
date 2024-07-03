@@ -168,13 +168,13 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             }
         }
 
-        return new ServeyResponse("monthlyData", monthlyData);
+        return new ServeyResponse("월간 통계 데이터", monthlyData);
     }
 
     // scoreStatistics
     @Override
     public ServeyResponse scoreStaticsServey() {
-        LinkedHashMap<String, TreeMap<String, TreeMap<String, Object>>> scoreData = new LinkedHashMap<>();
+        Map<String, Map<String, Map<String, Object>>> scoreData = new LinkedHashMap<>();
         String[] serveyList = {"serveyOne", "serveyTwo", "serveyThree", "serveyFour", "serveyFive"};
         List<Integer> scoreArray = new ArrayList<>();
 
@@ -212,10 +212,10 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
 
             for (int i = 0; i < 5; i++) {
                 scoreData.get(serveyList[i]).get(String.valueOf(platform))
-                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get(String.valueOf(platform)).get(String.valueOf(scoreArray.get(i))) + 1);
+                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get(String.valueOf(platform)).getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
 
                 scoreData.get(serveyList[i]).get("totalCnt")
-                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get("totalCnt").get(String.valueOf(scoreArray.get(i))) + 1);
+                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get("totalCnt").getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
             }
 
             // 초기화
@@ -226,12 +226,14 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             calculateAverage(scoreData.get(serveyList[i]));
         }
 
-        return new ServeyResponse("score statics", scoreData);
+        return new ServeyResponse("점수 통계 데이터", scoreData);
     }
 
     @Override
     public ServeyResponse consultantStaticsServey() {
+        // 상담사 통계 data 구조
         Map<String, Map<String, Object>> consultMap = new HashMap<>();
+        // 질문 List 배열
         String[] loopServeyList = {"serveyOne", "serveyTwo", "serveyThree", "serveyFour", "serveyFive"};
 
         List<Tuple> serveyList = jpaQueryFactory
@@ -250,18 +252,23 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                 .fetch();
 
         for (Tuple result : serveyList) {
+            // 질문 전체 count (상담사 group by 기준)
             Long consultCnt = result.get(Expressions.numberTemplate(Long.class, "count({0}) + count({1}) + count({2}) + count({3}) + count({4})",
                     servey.serveyOne, servey.serveyTwo, servey.serveyThree, servey.serveyFour, servey.serveyFive));
-            Double[] averages = new Double[5];
+            Double[] averages = new Double[loopServeyList.length];
             String consultantName = result.get(servey.consultantName);
 
+            // 질문 배열에 등록 시 자동으로 추가하여 average 계산되도록
             for (int i = 0; i < averages.length; i++) {
+                // 질문 배열에 있는 값으로 Tuple 값을 꺼내오기위한 코드
+                // 아래의 코드를 실행하면 fieldPath = servey.serveyOne ... 으로 Path를 반환
                 NumberPath<Integer> fieldPath = getFieldPath(servey, loopServeyList[i]);
                 if(fieldPath != null) {
                     averages[i] = (double) Math.round(result.get(fieldPath.avg()) * 10) / 10.0;
                 }
             }
 
+            // 질문 전체의 totalAvg 계산
             Double totalAvg = calculateTotalAvg(averages);
 
             LinkedHashMap<String, Object> resultMap = new LinkedHashMap<>();
@@ -275,18 +282,22 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             consultMap.put(consultantName, resultMap);
         }
 
-        return new ServeyResponse("tuple", sortMapByTotalAvg(consultMap));
+        // 반환된 Map을 sort하여 Response
+        return new ServeyResponse("상담사 통계 데이터", sortMapByTotalAvg(consultMap));
     }
 
     @Override
     public ServeyResponse dailyStaticsServey() {
-        LinkedHashMap<String, LinkedHashMap<String, Long>> dailyCount = new LinkedHashMap<>();
+        // Response 데이터 구조
+        Map<String, Map<String, Long>> dailyCount = new LinkedHashMap<>();
         StringTemplate formattedDate = Expressions.stringTemplate(
                 "DATE_FORMAT({0}, {1})",
                 servey.createdDate,
                 ConstantImpl.create("%Y-%m-%d %H")
         );
 
+        // format_date 기준 및 platform 기준 group by
+        // 위 조건으로 count 및 date, platform 도출
         List<Tuple> dailyList = jpaQueryFactory
                 .select(
                         servey.id.count(),
@@ -297,28 +308,31 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                 .groupBy(servey.platform, formattedDate)
                 .fetch();
 
+        // 도출된 List 반복문
         for (Tuple resultList : dailyList) {
             Long staticsCnt = resultList.get(servey.id.count());
-            String searchDate = LocalDateTime.now().minusDays(3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String searchDate = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String resultDate = resultList.get(formattedDate);
             Platform platform = resultList.get(servey.platform);
 
+            // yyyy-MM-dd HH 날짜와 시간 분리
             String[] splitList = resultDate.split(" ");
 
+            // searchDate > 전일 날짜, splitList[0] > DB에서 조회된 날짜가 동일할 경우
+            // totalCnt 및 WRMS, ILSANG count
             if (splitList[0].equals(searchDate)) {
                 if (!dailyCount.containsKey(splitList[1])) {
                     dailyCount.put(splitList[1], new LinkedHashMap<>());
-                    dailyCount.get(splitList[1]).put("totalCnt", 0L);
                     dailyCount.get(splitList[1]).put(String.valueOf(platform), staticsCnt);
                 } else {
                     dailyCount.get(splitList[1]).put(String.valueOf(platform), staticsCnt);
                 }
 
-                dailyCount.get(splitList[1]).put("totalCnt", dailyCount.get(splitList[1]).get("totalCnt") + staticsCnt);
+                dailyCount.get(splitList[1]).put("totalCnt", dailyCount.get(splitList[1]).getOrDefault("totalCnt", 0L) + staticsCnt);
             }
         }
 
-        return new ServeyResponse("daily Statics", dailyCount);
+        return new ServeyResponse("전일 통계 데이터", dailyCount);
     }
 
     private NumberPath<Integer> getFieldPath(QServey servey, String fieldName) {
@@ -338,10 +352,10 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
      * platform이 아닌, 전체에 대한 avg를 계산하기위한 메서드
      * @param scoreData
      */
-    private static void calculateAverage(TreeMap<String, TreeMap<String, Object>> scoreData) {
-        for (Map.Entry<String, TreeMap<String, Object>> platformEntry : scoreData.entrySet()) {
+    private static void calculateAverage(Map<String, Map<String, Object>> scoreData) {
+        for (Map.Entry<String, Map<String, Object>> platformEntry : scoreData.entrySet()) {
             String platform = platformEntry.getKey();
-            TreeMap<String, Object> platformData = platformEntry.getValue();
+            Map<String, Object> platformData = platformEntry.getValue();
 
             int totalScore = 0;
             int totalCount = 0;
