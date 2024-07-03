@@ -118,6 +118,31 @@ public class ServeyService {
         return new ServeyResponsePage<>(serveyDtoList, serveyPage.getTotalPages(), serveyPage.getTotalElements());
     }
 
+    // 주간 통계 데이터
+    public ServeyResponse weeklyData() {
+        return serveyCustomRepository.weeklyStaticsServey();
+    }
+
+    // 월간 통계 데이터
+    public ServeyResponse monthlyData() {
+        return serveyCustomRepository.monthlyStaticsServey();
+    }
+
+    // 점수 통계 데이터
+    public ServeyResponse scoreData() {
+        return serveyCustomRepository.scoreStaticsServey();
+    }
+
+    // 상담사 통계 데이터
+    public ServeyResponse consultantData() {
+        return serveyCustomRepository.consultantStaticsServey();
+    }
+
+    // 전일 통계 데이터
+    public ServeyResponse dailyData(){
+        return serveyCustomRepository.dailyStaticsServey();
+    }
+
     private OrderSpecifier<?> createOrderSpecifier(ServeySortType sortType) {
         // sort 기준이 입력되지 않았을 경우 queryDsl 권장 order by null ASC 반환
         if (sortType == null) {
