@@ -541,20 +541,20 @@ ILSANG</p></td>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/servey/servey-regist HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 249
+Content-Length: 252
 Host: localhost:8080
 
 {
   "serveyOne" : 4,
   "serveyTwo" : 4,
-  "serveyThree" : 4,
-  "serveyFour" : 4,
-  "serveyFive" : 4,
-  "userName" : "조동현",
-  "userPhone" : "01058495384",
-  "consultantName" : "조동",
+  "serveyThree" : 5,
+  "serveyFour" : 5,
+  "serveyFive" : 5,
+  "userName" : "차신애",
+  "userPhone" : "01058492304",
+  "consultantName" : "김이전",
   "platform" : "WRMS",
-  "serveyNumber" : "CO0000000020"
+  "serveyNumber" : "CO0000000026"
 }</code></pre>
 </div>
 </div>
@@ -600,7 +600,7 @@ Content-Length: 58
 <td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>encryptedData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>elementData</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -667,7 +667,7 @@ Content-Length: 58
 <h3 id="_암호화데이터_복호화_api_http_request">HTTP request</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/decrypt?encryptedData=EmyBaXv4ISguu2Unh03mwE%252BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%252F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%252F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%253D%253D HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/decrypt?elementData=EmyBaXv4ISguu2Unh03mwE%252BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%252F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%252F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%253D%253D HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -872,11 +872,133 @@ Content-Length: 1214
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_엑셀_다운로드_api">엑셀 다운로드 API</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_엑셀_다운로드_api_query_parameters">Query parameters</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필드명</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필수여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제약조건</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색시작일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색종료일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">serveyNumber: 상담번호
+userName: 상담자명
+ userPhone: 상담자번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchWord</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">검색어</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>platform</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WRMS, ILSANG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인입경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scoreType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NUMBER</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">totalScore: 총점
+avgScore: 평균</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">점수유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minScore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NUMBER</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소점수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxScore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NUMBER</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대점수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_엑셀_다운로드_api_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/excel/download?startDate=2024-05-20&amp;endDate=2024-06-11&amp;searchType=serveyNumber&amp;searchWord=CO0000&amp;platform=WRMS&amp;scoreType=avgScore&amp;minScore=1&amp;maxScore=5 HTTP/1.1
+Content-Type: application/octet-stream;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_엑셀_다운로드_api_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: ms-vnd/excel;charset=UTF-8
+Content-Disposition: attachment; filename="ë§ì¡±ëì¡°ì¬ ë¦¬ì¤í¸.xlsx"
+Content-Length: 3812
+
+PK-                      [Content_Types].xml�S�n�0����*6�PU�C���\{�X�%����]8�R�
+q�cfgfW�d�q�ZCB|��|�*�*h㻆},^�{Va�^K&lt;4l�f��b+��ذ&gt;�� ��D"xBڐ��tL��R-e�v4�*�&gt;׹h���	Z���z�����Q2S,���H���v�`o"��U�RٵC(2q��qa9S�&amp;����(�A��p(�tS6��9�)�JG���sBQ�4���0�eX�9u�1���dg9�2�~ω^��+~��#o�)� r�	�ʝ4���WH�����/��/�D1,�C1|��7PK�,(�;            PK-                      _rels/.rels���J1�_%̽�miڋ�����ݰ�LHFݾ����lA��03��1�v?�I�S.���uӂ�h���x9&gt;��@��p�HNT`��&gt;ӄRW��SQ���A$�k]�@KÉb�t�J-s��{қ����'Ι���[�:b�I̓��&lt;�2�M���)�oB�뼥�o��,d_L�^v�|�8�O��&amp;���24EGn�je���W�n�,g����Gс
+~Q/����}PKn2K�       J      PK-                      docProps/app.xmlM��
+�0D�~EȽ��ADҔ���A? ��6�lB�J?ߜ���0���ͯ�)�@��׍H6���V&gt;��$;�SC
+;̢(�ra�g�l�&amp;�e��L!y�%��49��`_���4G���F��J��Wg�GS�b����
+~�PK�|wؑ       �       PK-                      docProps/core.xmlm�]K�0��J�}��UB�!�@PXqx�c[l&gt;H����i�Ի$�sN�j{T#� ��k��#���Aw5~jw�%F&gt;p-�h4��o�JX&amp;���3\���ў	[�&gt;���}	�W���:b�x���Ғ(\���,L�j�g��Ҿ�qHA`:x���a8��X��&lt;�a��iJ�b��F9��=.�'���. 7�Ÿ́@�(`�dc%��sq}��p��|�Ћ�-�٦dE�R�_���l\s��ngn}�ȟ��OPKP��      �      PK-                      xl/sharedStrings.xml=�A�  ﾂ��.z0Ɣ�`������,�����q2��o�ԇ���N�E��x5�z&gt;�W���(R�K���^4{�����ŀ�5��y�V����y�m�XV�\�.�j����8� PKp��&amp;x       �       PK-                      xl/styles.xml���n� ��&gt;bop2TQ��P)U�RWb�6*�����ӤS�Nw�s���3ߍ֐���t��(l��������ҝx�!N=@$ɀ��}��3c���ʰr`:i��2��w,�
+�d�T��R#�voc �;c�iE��Û��E&lt;|��4Iɣ����F#��n���B�z�F���y�j3y��yҥ�jt&gt;���2��Lژ�!6��2F�OY��4@M�!���G��������1�t��y��p��"	n����u�����a�ΦDi�9�&amp;#��%I��9��}���cK��T��$?������`J������7���o��f��M|PK�1X@C      �      PK-                      xl/workbook.xml���N�0D�|��wj�E�8��J�!Q�o�Mc5���i�|�T��֣y;;r���'��j�@P0Ѻp��~��?���k����Ϣ�!i�sk)���cZőBq��s�|�idB�z���V�Qztn	5�'#v�3�ͧ��o!L�R6�nL��4{ea1S��4t8$�6����~�I
+4�]�Gj��p�LГ���]��kg5��n@����jNX��r��PKl5e��       ]      PK-                      xl/_rels/workbook.xml.rels��Mk�0@���}q���n/c�k?~���84����˿����@;�$��{�\��:Q�&gt;MU��`��Cg��xzł����a�Zni@)_���Ua6�Eқ�l=��ULʦ�yD)������E]��|ˀ9Sm���q�=�� {��v�KW\VS��hc���ޣ�)����AߏY���4��+����瘏��Z^F���5FϮ�� PKg뢨�       4      PK-                      xl/worksheets/sheet1.xml���O�@���+����w�&amp;KW��6T���ݶ���\�:�&amp;�(	$�lOF�q �&lt;�?�v���"��z�B���|������r���!� �����ZJ�%�q�vky��Fa`&gt;0Z�lyu����]//�)m��+בcy)�D.S��8eSRS�&amp;AV%29�jFq,ەM�b;�����G���FT��F-/6��u71�
+'+���ڣ��:j�2ElN�6
+�ʔ���HT��t�JȮ�)�e�m�f�%�Zl��$�$����u%�Z�m�.Z���m�lj��&gt;�3��������I�ß��wC����L)��1�g��Yc�0fi�]�&lt;kLZS���?�t��A�w��+�|�E�k*�L���A���&amp;�VĦ��a{]&amp;��p�|���x�$�����\'���~�k��x=n��������u��ոIa�etd��Ȁ('&lt;�;&amp;�+1���I��`R]��pR]�����WӓjA�\�jJ.�+������Q;��I�ԛ'	�m�?�g���$Vx��k��I�������%1���sjfN�nhzh9�M���8�
+��Bh�(�
+�&amp;ǒ��*��@�3��&amp;��g�Aë�A����n�Ѵ��a*�y��"h�4�]�.�FB��&amp;��ih��@�3��&amp;��g�Aë�A����b� �Kϳ_j&gt;z�QF�;�i�ЪEj��I��R찫d*���*��p�X�����4��%r}o��7�{�k����PKB��w�      J      PK-        �,(�;                     [Content_Types].xmlPK-        n2K�   J               �  _rels/.relsPK-        �|wؑ   �                �  docProps/app.xmlPK-        P��  �               �  docProps/core.xmlPK-        p��&amp;x   �                �  xl/sharedStrings.xmlPK-        �1X@C  �               �  xl/styles.xmlPK-        l5e��   ]                 xl/workbook.xmlPK-        g뢨�   4               5  xl/_rels/workbook.xml.relsPK-        B��w�  J               Z	  xl/worksheets/sheet1.xmlPK    	 	 ?  �</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-06-27 17:24:53 +0900
+Last updated 2024-07-03 11:46:13 +0900
 </div>
 </div>
 </body>
