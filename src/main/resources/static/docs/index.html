@@ -609,20 +609,20 @@ ILSANG</p></td>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/servey/servey-regist HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 252
-Host: localhost:8080
+Host: japi.mostx.co.kr
+Content-Length: 250
 
 {
-  "serveyOne" : 4,
+  "serveyOne" : 3,
   "serveyTwo" : 4,
-  "serveyThree" : 4,
+  "serveyThree" : 3,
   "serveyFour" : 4,
-  "serveyFive" : 4,
-  "userName" : "이봉남",
-  "userPhone" : "01048594039",
+  "serveyFive" : 5,
+  "userName" : "강남",
+  "userPhone" : "01038457393",
   "consultantName" : "김이후",
   "platform" : "WRMS",
-  "serveyNumber" : "CO0000000028"
+  "serveyNumber" : "CO00000000230"
 }</code></pre>
 </div>
 </div>
@@ -736,8 +736,8 @@ Content-Length: 58
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/decrypt?elementData=EmyBaXv4ISguu2Unh03mwE%252BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%252F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%252F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%253D%253D HTTP/1.1
-Accept: application/json
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr
+Accept: application/json</code></pre>
 </div>
 </div>
 </div>
@@ -870,7 +870,7 @@ avgScore: 평균</p></td>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/list?startDate=2024-05-20&amp;endDate=2024-06-11&amp;searchType=serveyNumber&amp;searchWord=CO0000&amp;platform=WRMS&amp;scoreType=avgScore&amp;minScore=1&amp;maxScore=5&amp;pageNumber=1&amp;pageSize=10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1029,7 +1029,7 @@ avgScore: 평균</p></td>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/excel/download?startDate=2024-05-20&amp;endDate=2024-06-11&amp;searchType=serveyNumber&amp;searchWord=CO0000&amp;platform=WRMS&amp;scoreType=avgScore&amp;minScore=1&amp;maxScore=5 HTTP/1.1
 Content-Type: application/octet-stream;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1043,23 +1043,20 @@ Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: ms-vnd/excel;charset=UTF-8
 Content-Disposition: attachment; filename="ë§ì¡±ëì¡°ì¬ ë¦¬ì¤í¸.xlsx"
-Content-Length: 3812
+Content-Length: 3813
 
 PK-                      [Content_Types].xml�S�n�0����*6�PU�C���\{�X�%����]8�R�
 q�cfgfW�d�q�ZCB|��|�*�*h㻆},^�{Va�^K&lt;4l�f��b+��ذ&gt;�� ��D"xBڐ��tL��R-e�v4�*�&gt;׹h���	Z���z�����Q2S,���H���v�`o"��U�RٵC(2q��qa9S�&amp;����(�A��p(�tS6��9�)�JG���sBQ�4���0�eX�9u�1���dg9�2�~ω^��+~��#o�)� r�	�ʝ4���WH�����/��/�D1,�C1|��7PK�,(�;            PK-                      _rels/.rels���J1�_%̽�miڋ�����ݰ�LHFݾ����lA��03��1�v?�I�S.���uӂ�h���x9&gt;��@��p�HNT`��&gt;ӄRW��SQ���A$�k]�@KÉb�t�J-s��{қ����'Ι���[�:b�I̓��&lt;�2�M���)�oB�뼥�o��,d_L�^v�|�8�O��&amp;���24EGn�je���W�n�,g����Gс
 ~Q/����}PKn2K�       J      PK-                      docProps/app.xmlM��
 �0D�~EȽ��ADҔ���A? ��6�lB�J?ߜ���0���ͯ�)�@��׍H6���V&gt;��$;�SC
 ;̢(�ra�g�l�&amp;�e��L!y�%��49��`_���4G���F��J��Wg�GS�b����
-~�PK�|wؑ       �       PK-                      docProps/core.xmlm��J�0�_%依��Di��� (.XQ����I��ooZ�
-*�"�����T���:?]�,e��F���c�M.(�k�G����t�T�8�9cх=��Kakڇ`K /zTܧ��1|5N������r��@a���0����R�J���E ��
-u������6,�J���R�4�S�pq���n��A�H��.�CP�((��ƕ|'O��u��M�򓄝'�hY^���^*��?���5�q!=����̭�
-����PK��)�      �      PK-                      xl/sharedStrings.xml=�A�  ﾂ��.z0Ɣ�`������,�����q2��o�ԇ���N�E��x5�z&gt;�W���(R�K���^4{�����ŀ�5��y�V����y�m�XV�\�.�j����8� PKp��&amp;x       �       PK-                      xl/styles.xml���n� ��&gt;bop2TQ��P)U�RWb�6*�����ӤS�Nw�s���3ߍ֐���t��(l��������ҝx�!N=@$ɀ��}��3c���ʰr`:i��2��w,�
+~�PK�|wؑ       �       PK-                      docProps/core.xmlm�]K�0��J�}��u���C���8�2�.$Ƕ�|�D��{�:+�wI��&lt;��������FW8K)F����n+���K�|�Z��h��	&lt;�֥�L{g,�ЃGѣ=��]��E��4:���)�յ�r��[ 9�k� p�'�0����R,J��Y ���I�f����w`N�����1���e����q^&gt;���w�.�j&amp;� E'+�N��M��uN�nZ4t�Vk��^J�k~~����b!�����-�%�Ss�	PK$U�\      �      PK-                      xl/sharedStrings.xml=�A�  ﾂ��.z0Ɣ�`������,�����q2��o�ԇ���N�E��x5�z&gt;�W���(R�K���^4{�����ŀ�5��y�V����y�m�XV�\�.�j����8� PKp��&amp;x       �       PK-                      xl/styles.xml���n� ��&gt;bop2TQ��P)U�RWb�6*�����ӤS�Nw�s���3ߍ֐���t��(l��������ҝx�!N=@$ɀ��}��3c���ʰr`:i��2��w,�
 �d�T��R#�voc �;c�iE��Û��E&lt;|��4Iɣ����F#��n���B�z�F���y�j3y��yҥ�jt&gt;���2��Lژ�!6��2F�OY��4@M�!���G��������1�t��y��p��"	n����u�����a�ΦDi�9�&amp;#��%I��9��}���cK��T��$?������`J������7���o��f��M|PK�1X@C      �      PK-                      xl/workbook.xml���N�0D�|��wj�E�8��J�!Q�o�Mc5���i�|�T��֣y;;r���'��j�@P0Ѻp��~��?���k����Ϣ�!i�sk)���cZőBq��s�|�idB�z���V�Qztn	5�'#v�3�ͧ��o!L�R6�nL��4{ea1S��4t8$�6����~�I
 4�]�Gj��p�LГ���]��kg5��n@����jNX��r��PKl5e��       ]      PK-                      xl/_rels/workbook.xml.rels��Mk�0@���}q���n/c�k?~���84����˿����@;�$��{�\��:Q�&gt;MU��`��Cg��xzł����a�Zni@)_���Ua6�Eқ�l=��ULʦ�yD)������E]��|ˀ9Sm���q�=�� {��v�KW\VS��hc���ޣ�)����AߏY���4��+����瘏��Z^F���5FϮ�� PKg뢨�       4      PK-                      xl/worksheets/sheet1.xml���O�@���+����w�&amp;KW��6T���ݶ���\�:�&amp;�(	$�lOF�q �&lt;�?�v���"��z�B���|������r���!� �����ZJ�%�q�vky��Fa`&gt;0Z�lyu����]//�)m��+בcy)�D.S��8eSRS�&amp;AV%29�jFq,ەM�b;�����G���FT��F-/6��u71�
 '+���ڣ��:j�2ElN�6
 �ʔ���HT��t�JȮ�)�e�m�f�%�Zl��$�$����u%�Z�m�.Z���m�lj��&gt;�3��������I�ß��wC����L)��1�g��Yc�0fi�]�&lt;kLZS���?�t��A�w��+�|�E�k*�L���A���&amp;�VĦ��a{]&amp;��p�|���x�$�����\'���~�k��x=n��������u��ոIa�etd��Ȁ('&lt;�;&amp;�+1���I��`R]��pR]�����WӓjA�\�jJ.�+������Q;��I�ԛ'	�m�?�g���$Vx��k��I�������%1���sjfN�nhzh9�M���8�
 ��Bh�(�
-�&amp;ǒ��*��@�3��&amp;��g�Aë�A����n�Ѵ��a*�y��"h�4�]�.�FB��&amp;��ih��@�3��&amp;��g�Aë�A����b� �Kϳ_j&gt;z�QF�;�i�ЪEj��I��R찫d*���*��p�X�����4��%r}o��7�{�k����PKB��w�      J      PK-        �,(�;                     [Content_Types].xmlPK-        n2K�   J               �  _rels/.relsPK-        �|wؑ   �                �  docProps/app.xmlPK-        ��)�  �               �  docProps/core.xmlPK-        p��&amp;x   �                �  xl/sharedStrings.xmlPK-        �1X@C  �               �  xl/styles.xmlPK-        l5e��   ]                 xl/workbook.xmlPK-        g뢨�   4               5  xl/_rels/workbook.xml.relsPK-        B��w�  J               Z	  xl/worksheets/sheet1.xmlPK    	 	 ?  �</code></pre>
+�&amp;ǒ��*��@�3��&amp;��g�Aë�A����n�Ѵ��a*�y��"h�4�]�.�FB��&amp;��ih��@�3��&amp;��g�Aë�A����b� �Kϳ_j&gt;z�QF�;�i�ЪEj��I��R찫d*���*��p�X�����4��%r}o��7�{�k����PKB��w�      J      PK-        �,(�;                     [Content_Types].xmlPK-        n2K�   J               �  _rels/.relsPK-        �|wؑ   �                �  docProps/app.xmlPK-        $U�\  �               �  docProps/core.xmlPK-        p��&amp;x   �                �  xl/sharedStrings.xmlPK-        �1X@C  �               �  xl/styles.xmlPK-        l5e��   ]                 xl/workbook.xmlPK-        g뢨�   4               6  xl/_rels/workbook.xml.relsPK-        B��w�  J               [	  xl/worksheets/sheet1.xmlPK    	 	 ?  �</code></pre>
 </div>
 </div>
 </div>
@@ -1074,7 +1071,7 @@ u������6,�J���R�4�S�pq���n��A�H��
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/weekly-statics HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1135,7 +1132,7 @@ Content-Length: 517
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/monthly-statics HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1148,7 +1145,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1421
+Content-Length: 1422
 
 {
   "message" : "월간 통계 데이터",
@@ -1177,8 +1174,8 @@ Content-Length: 1421
       },
       "07" : {
         "ILSANG" : 4,
-        "WRMS" : 9,
-        "totalCnt" : 13
+        "WRMS" : 11,
+        "totalCnt" : 15
       },
       "08" : {
         "ILSANG" : 1,
@@ -1254,7 +1251,7 @@ Content-Length: 1421
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/score-statics HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1285,17 +1282,17 @@ Content-Length: 2199
         "1" : 15,
         "2" : 1,
         "3" : 2,
-        "4" : 5,
+        "4" : 7,
         "5" : 3,
-        "avg" : 2.2
+        "avg" : 2.4
       },
       "totalCnt" : {
         "1" : 20,
         "2" : 2,
         "3" : 2,
-        "4" : 6,
+        "4" : 8,
         "5" : 5,
-        "avg" : 2.3
+        "avg" : 2.4
       }
     },
     "serveyTwo" : {
@@ -1311,7 +1308,7 @@ Content-Length: 2199
         "1" : 0,
         "2" : 15,
         "3" : 2,
-        "4" : 4,
+        "4" : 6,
         "5" : 5,
         "avg" : 3.0
       },
@@ -1319,7 +1316,7 @@ Content-Length: 2199
         "1" : 1,
         "2" : 21,
         "3" : 2,
-        "4" : 4,
+        "4" : 6,
         "5" : 7,
         "avg" : 2.9
       }
@@ -1337,15 +1334,15 @@ Content-Length: 2199
         "1" : 0,
         "2" : 1,
         "3" : 18,
-        "4" : 4,
+        "4" : 6,
         "5" : 3,
-        "avg" : 3.3
+        "avg" : 3.4
       },
       "totalCnt" : {
         "1" : 1,
         "2" : 3,
         "3" : 23,
-        "4" : 5,
+        "4" : 7,
         "5" : 3,
         "avg" : 3.2
       }
@@ -1363,7 +1360,7 @@ Content-Length: 2199
         "1" : 0,
         "2" : 1,
         "3" : 2,
-        "4" : 20,
+        "4" : 22,
         "5" : 3,
         "avg" : 4.0
       },
@@ -1371,7 +1368,7 @@ Content-Length: 2199
         "1" : 1,
         "2" : 2,
         "3" : 3,
-        "4" : 26,
+        "4" : 28,
         "5" : 3,
         "avg" : 3.8
       }
@@ -1389,7 +1386,7 @@ Content-Length: 2199
         "1" : 1,
         "2" : 0,
         "3" : 2,
-        "4" : 4,
+        "4" : 6,
         "5" : 19,
         "avg" : 4.5
       },
@@ -1397,7 +1394,7 @@ Content-Length: 2199
         "1" : 1,
         "2" : 1,
         "3" : 2,
-        "4" : 5,
+        "4" : 7,
         "5" : 26,
         "avg" : 4.5
       }
@@ -1418,7 +1415,7 @@ Content-Length: 2199
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/consultant-statics HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1445,6 +1442,15 @@ Content-Length: 1358
       "serveyFiveAvg" : 4.0,
       "totalAvg" : 4.4
     },
+    "김이후" : {
+      "totalCnt" : 30,
+      "serveyOneAvg" : 4.0,
+      "serveyTwoAvg" : 4.5,
+      "serveyThreeAvg" : 3.3,
+      "serveyFourAvg" : 3.5,
+      "serveyFiveAvg" : 3.7,
+      "totalAvg" : 3.8
+    },
     "조동" : {
       "totalCnt" : 30,
       "serveyOneAvg" : 3.3,
@@ -1452,15 +1458,6 @@ Content-Length: 1358
       "serveyThreeAvg" : 3.5,
       "serveyFourAvg" : 3.7,
       "serveyFiveAvg" : 4.7,
-      "totalAvg" : 3.7
-    },
-    "김이후" : {
-      "totalCnt" : 20,
-      "serveyOneAvg" : 4.0,
-      "serveyTwoAvg" : 4.8,
-      "serveyThreeAvg" : 3.0,
-      "serveyFourAvg" : 3.3,
-      "serveyFiveAvg" : 3.5,
       "totalAvg" : 3.7
     },
     "김이전" : {
@@ -1506,7 +1503,7 @@ Content-Length: 1358
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/daily-statics HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Host: japi.mostx.co.kr</code></pre>
 </div>
 </div>
 </div>
@@ -1522,15 +1519,15 @@ Content-Type: application/json;charset=UTF-8
 Content-Length: 198
 
 {
-  "message" : "전일 통계 데이정",
+  "message" : "전일 통계 데이터",
   "data" : {
     "15" : {
-      "totalCnt" : 1,
-      "WRMS" : 1
+      "WRMS" : 1,
+      "totalCnt" : 1
     },
     "16" : {
-      "totalCnt" : 2,
       "WRMS" : 1,
+      "totalCnt" : 2,
       "ILSANG" : 1
     }
   }
