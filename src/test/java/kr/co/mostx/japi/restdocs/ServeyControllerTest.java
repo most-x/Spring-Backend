@@ -43,11 +43,11 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
         input.put("serveyThree", 3);
         input.put("serveyFour", 5);
         input.put("serveyFive", 5);
-        input.put("userName", "강남");
-        input.put("userPhone", "01038457393");
-        input.put("consultantName", "김이후");
-        input.put("platform", "WRMS");
-        input.put("serveyNumber", "CO0000000031");
+        input.put("userName", "차신애");
+        input.put("userPhone", "01058492304");
+        input.put("consultantName", "조동현");
+        input.put("platform", "ILSANG");
+        input.put("serveyNumber", "ilsang000010");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
                 .header("Host", "japi.mostx.co.kr")
