@@ -38,16 +38,16 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void ServeyCreateTest() throws Exception {
         Map<String, Object> input = new LinkedHashMap<>();
-        input.put("serveyOne", 4);
-        input.put("serveyTwo", 4);
-        input.put("serveyThree", 4);
-        input.put("serveyFour", 4);
-        input.put("serveyFive", 4);
+        input.put("serveyOne", 5);
+        input.put("serveyTwo", 5);
+        input.put("serveyThree", 3);
+        input.put("serveyFour", 5);
+        input.put("serveyFive", 5);
         input.put("userName", "강남");
-        input.put("userPhone", "01048594039");
+        input.put("userPhone", "01038457393");
         input.put("consultantName", "김이후");
         input.put("platform", "WRMS");
-        input.put("serveyNumber", "CO0000000028");
+        input.put("serveyNumber", "CO0000000031");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
                 .header("Host", "japi.mostx.co.kr")
