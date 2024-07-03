@@ -14,6 +14,8 @@ import kr.co.mostx.japi.entity.Servey;
 import kr.co.mostx.japi.exception.CustomException;
 import kr.co.mostx.japi.exception.ErrorCode;
 import kr.co.mostx.japi.repository.ServeyRepository;
+import kr.co.mostx.japi.repository.impl.ServeyCustomRepositoryImpl;
+import kr.co.mostx.japi.response.ServeyResponse;
 import kr.co.mostx.japi.response.ServeyResponsePage;
 import kr.co.mostx.japi.type.ScoreType;
 import kr.co.mostx.japi.type.SearchType;
@@ -42,6 +44,7 @@ import static kr.co.mostx.japi.entity.QServey.servey;
 public class ServeyService {
     private final ServeyRepository serveyRepository;
     private final JPAQueryFactory jpaQueryFactory;
+    private final ServeyCustomRepositoryImpl serveyCustomRepository;
 
     @Transactional
     public Servey saveServey(ServeyDto serveyRequestDto) {
@@ -186,8 +189,8 @@ public class ServeyService {
         return AesUtil.aesCBCEncode(jsonData);
     }
 
-    public ServeyCryptDto decryptData(String encryptedData) throws Exception {
-        String decodedData = UriUtils.decode(encryptedData, StandardCharsets.UTF_8);
+    public ServeyCryptDto decryptData(String elementData) throws Exception {
+        String decodedData = UriUtils.decode(elementData, StandardCharsets.UTF_8);
         DataObject decryptJson = AesUtil.aesCBCDecode(decodedData);
         String registStatus = this.findServeyNumber(decryptJson.getServeyNumber());
 

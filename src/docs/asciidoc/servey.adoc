@@ -4,3 +4,5 @@ operation::servey-controller-test/servey-create-test[snippets="request-fields,ht
 operation::servey-controller-test/decrypt-test[snippets="query-parameters,response-fields,http-request,http-response"]
 == 만족도 조사 검색 API
 operation::servey-controller-test/servey-search-find-test[snippets="query-parameters,http-request,http-response"]
+== 엑셀 다운로드 API
+operation::servey-controller-test/excel-download-test[snippets="query-parameters,http-request,http-response"]

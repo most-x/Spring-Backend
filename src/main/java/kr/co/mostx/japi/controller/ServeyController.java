@@ -30,8 +30,8 @@ public class ServeyController {
     }
 
     @GetMapping("/decrypt")
-    public ServeyCryptDto decryptDataGet256(@RequestParam String encryptedData) throws Exception {
-        return serveyService.decryptData(encryptedData);
+    public ServeyCryptDto decryptDataGet256(@RequestParam String elementData) throws Exception {
+        return serveyService.decryptData(elementData);
     }
 
     @PostMapping("/servey-regist")

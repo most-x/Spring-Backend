@@ -34,15 +34,15 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     void ServeyCreateTest() throws Exception {
         Map<String, Object> input = new LinkedHashMap<>();
         input.put("serveyOne", 4);
-        input.put("serveyTwo", 4);
-        input.put("serveyThree", 4);
-        input.put("serveyFour", 4);
-        input.put("serveyFive", 4);
-        input.put("userName", "조동현");
-        input.put("userPhone", "01058495384");
-        input.put("consultantName", "조동");
+        input.put("serveyTwo", 5);
+        input.put("serveyThree", 2);
+        input.put("serveyFour", 2);
+        input.put("serveyFive", 1);
+        input.put("userName", "차신애");
+        input.put("userPhone", "01058492304");
+        input.put("consultantName", "김이후");
         input.put("platform", "WRMS");
-        input.put("serveyNumber", "CO0000000020");
+        input.put("serveyNumber", "CO0000000027");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,13 +68,13 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void DecryptTest() throws Exception {
         mockMvc.perform(get("/api/servey/decrypt")
-                        .param("encryptedData", "EmyBaXv4ISguu2Unh03mwE%2BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%2F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%2F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%3D%3D")
+                        .param("elementData", "EmyBaXv4ISguu2Unh03mwE%2BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%2F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%2F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%3D%3D")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 queryParameters(
-                                        parameterWithName("encryptedData").description("암호화된 데이터").attributes(field("type", String.valueOf(JsonFieldType.STRING)))
+                                        parameterWithName("elementData").description("암호화된 데이터").attributes(field("type", String.valueOf(JsonFieldType.STRING)))
                                 ),
                                 responseFields(
                                         fieldWithPath("decryptData").type(JsonFieldType.OBJECT).description("복호환된 데이터(JSON)"),
@@ -146,53 +146,5 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
                         )
                 ));
     }
-//
-//    @Test
-//    void weeklyStaticsTest() {
-//        try {
-//            mockMvc.perform(get("/api/servey/weekly-statics").contentType(MediaType.APPLICATION_JSON))
-//                    .andExpect(status().isOk())
-//                    .andDo(
-//                            print()
-//                    );
-//        } catch (Exception e) {
-//            return;
-//        }
-//    }
-//
-//    @Test
-//    void monthlyStaticsTest() {
-//        try {
-//            mockMvc.perform(get("/api/v1/posts/monthly-statics").contentType(MediaType.APPLICATION_JSON))
-//                    .andExpect(status().isOk())
-//                    .andDo(
-//                            print()
-//                    );
-//        } catch (Exception e) {
-//            return;
-//        }
-//    }
-//
-//    @Test
-//    void scoreStaticsTest() {
-//        try {
-//            mockMvc.perform(get("/api/v1/posts/score-statics").contentType(MediaType.APPLICATION_JSON))
-//                    .andExpect(status().isOk())
-//                    .andDo(
-//                            print()
-//                    );
-//        } catch (Exception e) {
-//            return;
-//        }
-//    }
-//
-//    @Test
-//    void consultantStaticsTest() {
-//        System.out.println(serveyCustomRepository.consultantStaticsServey().getData() + "test4");
-//    }
-//
-//    @Test
-//    void dailyStaticsTest() {
-//        System.out.println(serveyCustomRepository.dailyStaticsServey().getData() + "test5");
-//    }
+
 }
