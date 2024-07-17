@@ -5,10 +5,12 @@ import jakarta.validation.Valid;
 import kr.co.mostx.japi.dto.ServeyCryptDto;
 import kr.co.mostx.japi.dto.ServeyDto;
 import kr.co.mostx.japi.dto.ServeySearchDto;
+import kr.co.mostx.japi.dto.ServeyStaticsSearchDto;
 import kr.co.mostx.japi.entity.Servey;
 import kr.co.mostx.japi.excel.ExcelService;
 import kr.co.mostx.japi.response.ServeyResponse;
 import kr.co.mostx.japi.response.ServeyResponsePage;
+import kr.co.mostx.japi.response.ServeyScoreResponse;
 import kr.co.mostx.japi.service.ServeyService;
 import kr.co.mostx.japi.type.ServeySortType;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,8 @@ public class ServeyController {
     }
 
     @GetMapping("/list")
-    public ServeyResponsePage<List<ServeyDto>> findSearchServey(@ModelAttribute ServeySearchDto serveySearchDto, ServeySortType sortType,
+    public ServeyResponsePage<List<ServeyDto>> findSearchServey(@ModelAttribute ServeySearchDto serveySearchDto,
+                                                                @RequestParam(required = false) ServeySortType[] sortType,
                                                                 @RequestParam(required = false, defaultValue = "1") int pageNumber,
                                                                 @RequestParam(required = false, defaultValue = "10")int pageSize) {
         return serveyService.findSearchServey(serveySearchDto, sortType, pageNumber, pageSize);
@@ -61,8 +64,8 @@ public class ServeyController {
     }
 
     @GetMapping("/score-statics")
-    public ServeyResponse scoreStaticsServey() {
-        return serveyService.scoreData();
+    public ServeyScoreResponse scoreStaticsServey(@ModelAttribute ServeyStaticsSearchDto searchDto) {
+        return serveyService.scoreData(searchDto);
     }
 
     @GetMapping("/consultant-statics")
