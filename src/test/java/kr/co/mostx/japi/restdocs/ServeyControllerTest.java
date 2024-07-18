@@ -38,16 +38,16 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void ServeyCreateTest() throws Exception {
         Map<String, Object> input = new LinkedHashMap<>();
-        input.put("serveyOne", 5);
-        input.put("serveyTwo", 5);
-        input.put("serveyThree", 3);
-        input.put("serveyFour", 5);
-        input.put("serveyFive", 5);
-        input.put("userName", "차신애");
-        input.put("userPhone", "01058492304");
+        input.put("serveyOne", 1);
+        input.put("serveyTwo", 1);
+        input.put("serveyThree", 1);
+        input.put("serveyFour", 1);
+        input.put("serveyFive", 1);
+        input.put("userName", "하선호");
+        input.put("userPhone", "01012983737");
         input.put("consultantName", "조동현");
-        input.put("platform", "ILSANG");
-        input.put("serveyNumber", "ilsang000010");
+        input.put("platform", "WRMS");
+        input.put("serveyNumber", "CSL0000374674");
 
         ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
                 .header("Host", "japi.mostx.co.kr")
@@ -108,6 +108,7 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
                         .param("scoreType", "avgScore")
                         .param("minScore", "1")
                         .param("maxScore", "5")
+                        .param("sortType", "avgScoreASC")
                         .param("pageNumber", "1")
                         .param("pageSize", "10"))
                 .andExpect(status().isOk())
@@ -121,6 +122,7 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
                                 parameterWithName("scoreType").optional().description("점수유형").attributes(field("constraints", "totalScore: 총점" + "\n" + "avgScore: 평균"), field("type", "NUMBER")),
                                 parameterWithName("minScore").optional().description("최소점수").attributes(field("type", "NUMBER")),
                                 parameterWithName("maxScore").optional().description("최대점수").attributes(field("type", "NUMBER")),
+                                parameterWithName("sortType").optional().description("정렬기준").attributes(field("type", "STRING"), field("constraints", "avgScoreASC:평균낮은순" + "\n" + "avgScoreDESC:평균높은순" + "\n" + "totalScoreASC:총점낮은순" + "\n" + "totalScoreDESC:총점높은순")),
                                 parameterWithName("pageNumber").optional().description("페이지 번호").attributes(field("constraints", "Default Number : 1"), field("type", "NUMBER")),
                                 parameterWithName("pageSize").optional().description("페이지 사이즈").attributes(field("constraints", "Default Size : 10"), field("type", "NUMBER"))
                         )
@@ -190,13 +192,17 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
     @Test
     void scoreStaticsTest() {
         try {
-            mockMvc.perform(get("/api/servey/score-statics")
+            mockMvc.perform(get("/api/servey/score-statics?entryRoute=ALL")
                             .header("Host", "japi.mostx.co.kr")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andDo(
-                            print()
-                    );
+                    .andDo(restDocs.document(
+                            queryParameters(
+                                    parameterWithName("startDate").optional().description("검색시작일").attributes(field("type", "yyyy-MM-dd")),
+                                    parameterWithName("endDate").optional().description("검색종료일").attributes(field("type", "yyyy-MM-dd")),
+                                    parameterWithName("entryRoute").optional().description("인입경").attributes(field("constraints", "serveyNumber: 상담번호" + "\n" + "userName: 상담자명 " + "\n" + " userPhone: 상담자번호"), field("type", "STRING"))
+                            )
+                    ));
         } catch (Exception e) {
             return;
         }

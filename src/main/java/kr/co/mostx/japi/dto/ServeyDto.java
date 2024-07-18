@@ -1,5 +1,6 @@
 package kr.co.mostx.japi.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kr.co.mostx.japi.entity.Servey;
 import kr.co.mostx.japi.excel.ExcelColumnName;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIgnoreProperties()
 @ExcelFileName(fileName = "만족도조사 리스트")
 public class ServeyDto {
@@ -43,6 +44,7 @@ public class ServeyDto {
     @ExcelColumnName(headerName = "상담번호")
     private String serveyNumber;
     @ExcelColumnName(headerName = "등록일")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
 
     @Builder

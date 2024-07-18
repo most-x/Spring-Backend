@@ -2,17 +2,22 @@ package kr.co.mostx.japi.repository.impl;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.mostx.japi.dto.ServeyStaticsSearchDto;
 import kr.co.mostx.japi.entity.QServey;
 import kr.co.mostx.japi.entity.Servey;
 import kr.co.mostx.japi.repository.ServeyCustomRepository;
 import kr.co.mostx.japi.response.ServeyResponse;
+import kr.co.mostx.japi.response.ServeyScoreResponse;
 import kr.co.mostx.japi.type.Platform;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -22,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static common.common.getBooleanExpression;
 import static kr.co.mostx.japi.entity.QServey.servey;
 
 @Repository
@@ -103,7 +109,7 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             Platform platform = tuple.get(servey.platform);
             String date = tuple.get(formattedDate.as("date"));
 
-            resultMap.get(date).put(String.valueOf(platform), serveyCnt);
+            resultMap.get(date).put(platform.getPlatformName(), serveyCnt);
             resultMap.get(date).put("totalCnt", resultMap.get(date).get("totalCnt") + serveyCnt);
         }
 
@@ -163,7 +169,7 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             }
 
             if (monthlyData.get(year).containsKey(month)) {
-                monthlyData.get(year).get(month).put(String.valueOf(platform), monthlyCnt);
+                monthlyData.get(year).get(month).put(platform.getPlatformName(), monthlyCnt);
                 monthlyData.get(year).get(month).put("totalCnt", monthlyData.get(year).get(month).get("totalCnt") + monthlyCnt);
             }
         }
@@ -173,10 +179,11 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
 
     // scoreStatistics
     @Override
-    public ServeyResponse scoreStaticsServey() {
+    public ServeyScoreResponse scoreStaticsServey(ServeyStaticsSearchDto searchDto) {
         Map<String, Map<String, Map<String, Object>>> scoreData = new LinkedHashMap<>();
         String[] serveyList = {"serveyOne", "serveyTwo", "serveyThree", "serveyFour", "serveyFive"};
         List<Integer> scoreArray = new ArrayList<>();
+        Long totalCnt = 0L;
 
         List<Tuple> scoreList = jpaQueryFactory
                 .select(
@@ -188,17 +195,17 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                         servey.platform
                 )
                 .from(servey)
+                .where(
+                        searchDate(searchDto.getStartDate(), searchDto.getEndDate()),
+                        searchPlatform(searchDto.getEntryRoute())
+                )
                 .fetch();
 
         for (String s : serveyList) {
             scoreData.put(s, new TreeMap<>());
-            scoreData.get(s).put("totalCnt", new TreeMap<>());
-            scoreData.get(s).put("WRMS", new TreeMap<>());
-            scoreData.get(s).put("ILSANG", new TreeMap<>());
+            scoreData.get(s).put(searchDto.getEntryRoute(), new TreeMap<>());
             for (int i = 1; i <= serveyList.length; i++) {
-                scoreData.get(s).get("totalCnt").put(String.format("%d", i), 0);
-                scoreData.get(s).get("WRMS").put(String.format("%d", i), 0);
-                scoreData.get(s).get("ILSANG").put(String.format("%d", i), 0);
+                scoreData.get(s).get(searchDto.getEntryRoute()).put(String.format("%d", i), 0);
             }
         }
 
@@ -211,22 +218,23 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             Platform platform = result.get(servey.platform);
 
             for (int i = 0; i < 5; i++) {
-                scoreData.get(serveyList[i]).get(String.valueOf(platform))
-                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get(String.valueOf(platform)).getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
+                scoreData.get(serveyList[i]).get(searchDto.getEntryRoute())
+                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get(searchDto.getEntryRoute()).getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
 
-                scoreData.get(serveyList[i]).get("totalCnt")
-                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get("totalCnt").getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
+//                scoreData.get(serveyList[i]).get("totalCnt")
+//                        .put(String.valueOf(scoreArray.get(i)), (int) scoreData.get(serveyList[i]).get("totalCnt").getOrDefault(String.valueOf(scoreArray.get(i)), 0) + 1);
             }
 
             // 초기화
             scoreArray.clear();
+            totalCnt++;
         }
 
         for (int i = 0; i < 5; i++) {
             calculateAverage(scoreData.get(serveyList[i]));
         }
 
-        return new ServeyResponse("점수 통계 데이터", scoreData);
+        return new ServeyScoreResponse("점수 통계 데이터", scoreData, totalCnt);
     }
 
     @Override
@@ -323,9 +331,9 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             if (splitList[0].equals(searchDate)) {
                 if (!dailyCount.containsKey(splitList[1])) {
                     dailyCount.put(splitList[1], new LinkedHashMap<>());
-                    dailyCount.get(splitList[1]).put(String.valueOf(platform), staticsCnt);
+                    dailyCount.get(splitList[1]).put(platform.getPlatformName(), staticsCnt);
                 } else {
-                    dailyCount.get(splitList[1]).put(String.valueOf(platform), staticsCnt);
+                    dailyCount.get(splitList[1]).put(platform.getPlatformName(), staticsCnt);
                 }
 
                 dailyCount.get(splitList[1]).put("totalCnt", dailyCount.get(splitList[1]).getOrDefault("totalCnt", 0L) + staticsCnt);
@@ -344,6 +352,14 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
             exception.printStackTrace();
             return null;
         }
+    }
+
+    private BooleanExpression searchDate(LocalDate startDate, LocalDate endDate) {
+        return getBooleanExpression(startDate, endDate);
+    }
+
+    private BooleanExpression searchPlatform(String platform) {
+        return StringUtils.hasText(platform) && !"ALL".equals(platform) ? servey.platform.stringValue().contains(platform) : null;
     }
 
     /**

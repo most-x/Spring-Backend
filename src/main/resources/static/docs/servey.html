@@ -542,19 +542,19 @@ ILSANG</p></td>
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/servey/servey-regist HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: japi.mostx.co.kr
-Content-Length: 250
+Content-Length: 254
 
 {
-  "serveyOne" : 3,
-  "serveyTwo" : 4,
-  "serveyThree" : 3,
-  "serveyFour" : 4,
+  "serveyOne" : 5,
+  "serveyTwo" : 5,
+  "serveyThree" : 4,
+  "serveyFour" : 5,
   "serveyFive" : 5,
-  "userName" : "강남",
-  "userPhone" : "01038457393",
-  "consultantName" : "김이후",
-  "platform" : "WRMS",
-  "serveyNumber" : "CO00000000230"
+  "userName" : "문동근",
+  "userPhone" : "01058569373",
+  "consultantName" : "강성민",
+  "platform" : "ILSANG",
+  "serveyNumber" : "ilsang000011"
 }</code></pre>
 </div>
 </div>
@@ -780,6 +780,16 @@ avgScore: 평균</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">최대점수</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sortType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRING</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">avgScoreASC:평균낮은순
+avgScoreDESC:평균높은순
+totalScoreASC:총점낮은순
+totalScoreDESC:총점높은순</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬기준</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>NUMBER</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
@@ -800,7 +810,7 @@ avgScore: 평균</p></td>
 <h3 id="_만족도_조사_검색_api_http_request">HTTP request</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/list?startDate=2024-05-20&amp;endDate=2024-06-11&amp;searchType=serveyNumber&amp;searchWord=CO0000&amp;platform=WRMS&amp;scoreType=avgScore&amp;minScore=1&amp;maxScore=5&amp;pageNumber=1&amp;pageSize=10 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/servey/list?startDate=2024-05-20&amp;endDate=2024-06-11&amp;searchType=serveyNumber&amp;searchWord=CO0000&amp;platform=WRMS&amp;scoreType=avgScore&amp;minScore=1&amp;maxScore=5&amp;sortType=avgScoreASC&amp;pageNumber=1&amp;pageSize=10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: japi.mostx.co.kr</code></pre>
 </div>
@@ -982,13 +992,13 @@ q�cfgfW�d�q�ZCB|��|�*�*h㻆},^�{Va�^K&lt;4l�f��b+
 ~Q/����}PKn2K�       J      PK-                      docProps/app.xmlM��
 �0D�~EȽ��ADҔ���A? ��6�lB�J?ߜ���0���ͯ�)�@��׍H6���V&gt;��$;�SC
 ;̢(�ra�g�l�&amp;�e��L!y�%��49��`_���4G���F��J��Wg�GS�b����
-~�PK�|wؑ       �       PK-                      docProps/core.xmlm�]K�0��J�}��u���C���8�2�.$Ƕ�|�D��{�:+�wI��&lt;��������FW8K)F����n+���K�|�Z��h��	&lt;�֥�L{g,�ЃGѣ=��]��E��4:���)�յ�r��[ 9�k� p�'�0����R,J��Y ���I�f����w`N�����1���e����q^&gt;���w�.�j&amp;� E'+�N��M��uN�nZ4t�Vk��^J�k~~����b!�����-�%�Ss�	PK$U�\      �      PK-                      xl/sharedStrings.xml=�A�  ﾂ��.z0Ɣ�`������,�����q2��o�ԇ���N�E��x5�z&gt;�W���(R�K���^4{�����ŀ�5��y�V����y�m�XV�\�.�j����8� PKp��&amp;x       �       PK-                      xl/styles.xml���n� ��&gt;bop2TQ��P)U�RWb�6*�����ӤS�Nw�s���3ߍ֐���t��(l��������ҝx�!N=@$ɀ��}��3c���ʰr`:i��2��w,�
+~�PK�|wؑ       �       PK-                      docProps/core.xmlm�]K�0��J�}{�v��Q����Ļ��b�A���M묠�%y��p���:�]�,e�����u[ѧ�&amp;����1�=��뺔�K�p�Ez�$z���V��r /;T§��1|5N���+�hr��@a�&amp;ab#=)�(�fA#T���,�����w`N�����1���e�|�8/��z��DZ�'5�E��DG+�N����nC�嫄�'۱��r^\���k~~����b!�����-�%����PK��      �      PK-                      xl/sharedStrings.xml=�A�  ﾂ��.z0Ɣ�`������,�����q2��o�ԇ���N�E��x5�z&gt;�W���(R�K���^4{�����ŀ�5��y�V����y�m�XV�\�.�j����8� PKp��&amp;x       �       PK-                      xl/styles.xml���n� ��&gt;bop2TQ��P)U�RWb�6*�����ӤS�Nw�s���3ߍ֐���t��(l��������ҝx�!N=@$ɀ��}��3c���ʰr`:i��2��w,�
 �d�T��R#�voc �;c�iE��Û��E&lt;|��4Iɣ����F#��n���B�z�F���y�j3y��yҥ�jt&gt;���2��Lژ�!6��2F�OY��4@M�!���G��������1�t��y��p��"	n����u�����a�ΦDi�9�&amp;#��%I��9��}���cK��T��$?������`J������7���o��f��M|PK�1X@C      �      PK-                      xl/workbook.xml���N�0D�|��wj�E�8��J�!Q�o�Mc5���i�|�T��֣y;;r���'��j�@P0Ѻp��~��?���k����Ϣ�!i�sk)���cZőBq��s�|�idB�z���V�Qztn	5�'#v�3�ͧ��o!L�R6�nL��4{ea1S��4t8$�6����~�I
 4�]�Gj��p�LГ���]��kg5��n@����jNX��r��PKl5e��       ]      PK-                      xl/_rels/workbook.xml.rels��Mk�0@���}q���n/c�k?~���84����˿����@;�$��{�\��:Q�&gt;MU��`��Cg��xzł����a�Zni@)_���Ua6�Eқ�l=��ULʦ�yD)������E]��|ˀ9Sm���q�=�� {��v�KW\VS��hc���ޣ�)����AߏY���4��+����瘏��Z^F���5FϮ�� PKg뢨�       4      PK-                      xl/worksheets/sheet1.xml���O�@���+����w�&amp;KW��6T���ݶ���\�:�&amp;�(	$�lOF�q �&lt;�?�v���"��z�B���|������r���!� �����ZJ�%�q�vky��Fa`&gt;0Z�lyu����]//�)m��+בcy)�D.S��8eSRS�&amp;AV%29�jFq,ەM�b;�����G���FT��F-/6��u71�
 '+���ڣ��:j�2ElN�6
 �ʔ���HT��t�JȮ�)�e�m�f�%�Zl��$�$����u%�Z�m�.Z���m�lj��&gt;�3��������I�ß��wC����L)��1�g��Yc�0fi�]�&lt;kLZS���?�t��A�w��+�|�E�k*�L���A���&amp;�VĦ��a{]&amp;��p�|���x�$�����\'���~�k��x=n��������u��ոIa�etd��Ȁ('&lt;�;&amp;�+1���I��`R]��pR]�����WӓjA�\�jJ.�+������Q;��I�ԛ'	�m�?�g���$Vx��k��I�������%1���sjfN�nhzh9�M���8�
 ��Bh�(�
-�&amp;ǒ��*��@�3��&amp;��g�Aë�A����n�Ѵ��a*�y��"h�4�]�.�FB��&amp;��ih��@�3��&amp;��g�Aë�A����b� �Kϳ_j&gt;z�QF�;�i�ЪEj��I��R찫d*���*��p�X�����4��%r}o��7�{�k����PKB��w�      J      PK-        �,(�;                     [Content_Types].xmlPK-        n2K�   J               �  _rels/.relsPK-        �|wؑ   �                �  docProps/app.xmlPK-        $U�\  �               �  docProps/core.xmlPK-        p��&amp;x   �                �  xl/sharedStrings.xmlPK-        �1X@C  �               �  xl/styles.xmlPK-        l5e��   ]                 xl/workbook.xmlPK-        g뢨�   4               6  xl/_rels/workbook.xml.relsPK-        B��w�  J               [	  xl/worksheets/sheet1.xmlPK    	 	 ?  �</code></pre>
+�&amp;ǒ��*��@�3��&amp;��g�Aë�A����n�Ѵ��a*�y��"h�4�]�.�FB��&amp;��ih��@�3��&amp;��g�Aë�A����b� �Kϳ_j&gt;z�QF�;�i�ЪEj��I��R찫d*���*��p�X�����4��%r}o��7�{�k����PKB��w�      J      PK-        �,(�;                     [Content_Types].xmlPK-        n2K�   J               �  _rels/.relsPK-        �|wؑ   �                �  docProps/app.xmlPK-        ��  �               �  docProps/core.xmlPK-        p��&amp;x   �                �  xl/sharedStrings.xmlPK-        �1X@C  �               �  xl/styles.xmlPK-        l5e��   ]                 xl/workbook.xmlPK-        g뢨�   4               6  xl/_rels/workbook.xml.relsPK-        B��w�  J               [	  xl/worksheets/sheet1.xmlPK    	 	 ?  �</code></pre>
 </div>
 </div>
 </div>
@@ -1016,37 +1026,33 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 517
+Content-Length: 442
 
 {
   "message" : "주간 통계 데이터",
   "data" : {
-    "2024-06-26" : {
+    "2024-07-03" : {
+      "ILSANG" : 3,
+      "WRMS" : 8,
+      "totalCnt" : 11
+    },
+    "2024-07-04" : {
       "totalCnt" : 0
     },
-    "2024-06-27" : {
+    "2024-07-05" : {
       "totalCnt" : 0
     },
-    "2024-06-28" : {
-      "ILSANG" : 1,
-      "WRMS" : 7,
-      "totalCnt" : 8
-    },
-    "2024-06-29" : {
+    "2024-07-06" : {
       "totalCnt" : 0
     },
-    "2024-06-30" : {
+    "2024-07-07" : {
       "totalCnt" : 0
     },
-    "2024-07-01" : {
-      "ILSANG" : 1,
-      "WRMS" : 3,
-      "totalCnt" : 4
+    "2024-07-08" : {
+      "totalCnt" : 0
     },
-    "2024-07-02" : {
-      "ILSANG" : 1,
-      "WRMS" : 2,
-      "totalCnt" : 3
+    "2024-07-09" : {
+      "totalCnt" : 0
     }
   }
 }</code></pre>
@@ -1105,9 +1111,9 @@ Content-Length: 1422
         "totalCnt" : 17
       },
       "07" : {
-        "ILSANG" : 4,
-        "WRMS" : 11,
-        "totalCnt" : 15
+        "ILSANG" : 5,
+        "WRMS" : 13,
+        "totalCnt" : 18
       },
       "08" : {
         "ILSANG" : 1,
@@ -1207,24 +1213,24 @@ Content-Length: 2199
         "2" : 1,
         "3" : 0,
         "4" : 1,
-        "5" : 2,
-        "avg" : 2.3
+        "5" : 3,
+        "avg" : 2.6
       },
       "WRMS" : {
         "1" : 15,
         "2" : 1,
-        "3" : 2,
+        "3" : 3,
         "4" : 7,
-        "5" : 3,
-        "avg" : 2.4
+        "5" : 4,
+        "avg" : 2.5
       },
       "totalCnt" : {
         "1" : 20,
         "2" : 2,
-        "3" : 2,
+        "3" : 3,
         "4" : 8,
-        "5" : 5,
-        "avg" : 2.4
+        "5" : 7,
+        "avg" : 2.5
       }
     },
     "serveyTwo" : {
@@ -1233,31 +1239,31 @@ Content-Length: 2199
         "2" : 6,
         "3" : 0,
         "4" : 0,
-        "5" : 2,
-        "avg" : 2.6
+        "5" : 3,
+        "avg" : 2.8
       },
       "WRMS" : {
         "1" : 0,
         "2" : 15,
         "3" : 2,
-        "4" : 6,
-        "5" : 5,
-        "avg" : 3.0
+        "4" : 7,
+        "5" : 6,
+        "avg" : 3.1
       },
       "totalCnt" : {
         "1" : 1,
         "2" : 21,
         "3" : 2,
-        "4" : 6,
-        "5" : 7,
-        "avg" : 2.9
+        "4" : 7,
+        "5" : 9,
+        "avg" : 3.1
       }
     },
     "serveyThree" : {
       "ILSANG" : {
         "1" : 1,
         "2" : 2,
-        "3" : 5,
+        "3" : 6,
         "4" : 1,
         "5" : 0,
         "avg" : 2.7
@@ -1265,7 +1271,7 @@ Content-Length: 2199
       "WRMS" : {
         "1" : 0,
         "2" : 1,
-        "3" : 18,
+        "3" : 20,
         "4" : 6,
         "5" : 3,
         "avg" : 3.4
@@ -1273,7 +1279,7 @@ Content-Length: 2199
       "totalCnt" : {
         "1" : 1,
         "2" : 3,
-        "3" : 23,
+        "3" : 26,
         "4" : 7,
         "5" : 3,
         "avg" : 3.2
@@ -1285,24 +1291,24 @@ Content-Length: 2199
         "2" : 1,
         "3" : 1,
         "4" : 6,
-        "5" : 0,
-        "avg" : 3.3
+        "5" : 1,
+        "avg" : 3.5
       },
       "WRMS" : {
         "1" : 0,
         "2" : 1,
         "3" : 2,
-        "4" : 22,
-        "5" : 3,
+        "4" : 23,
+        "5" : 4,
         "avg" : 4.0
       },
       "totalCnt" : {
         "1" : 1,
         "2" : 2,
         "3" : 3,
-        "4" : 28,
-        "5" : 3,
-        "avg" : 3.8
+        "4" : 29,
+        "5" : 5,
+        "avg" : 3.9
       }
     },
     "serveyFive" : {
@@ -1311,7 +1317,7 @@ Content-Length: 2199
         "2" : 1,
         "3" : 0,
         "4" : 1,
-        "5" : 7,
+        "5" : 8,
         "avg" : 4.6
       },
       "WRMS" : {
@@ -1319,7 +1325,7 @@ Content-Length: 2199
         "2" : 0,
         "3" : 2,
         "4" : 6,
-        "5" : 19,
+        "5" : 21,
         "avg" : 4.5
       },
       "totalCnt" : {
@@ -1327,8 +1333,8 @@ Content-Length: 2199
         "2" : 1,
         "3" : 2,
         "4" : 7,
-        "5" : 26,
-        "avg" : 4.5
+        "5" : 29,
+        "avg" : 4.6
       }
     }
   }
@@ -1360,28 +1366,28 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1358
+Content-Length: 1359
 
 {
   "message" : "상담사 통계 데이터",
   "data" : {
     "조동현" : {
-      "totalCnt" : 5,
+      "totalCnt" : 10,
       "serveyOneAvg" : 5.0,
       "serveyTwoAvg" : 5.0,
-      "serveyThreeAvg" : 4.0,
-      "serveyFourAvg" : 4.0,
-      "serveyFiveAvg" : 4.0,
-      "totalAvg" : 4.4
+      "serveyThreeAvg" : 3.5,
+      "serveyFourAvg" : 4.5,
+      "serveyFiveAvg" : 4.5,
+      "totalAvg" : 4.5
     },
     "김이후" : {
-      "totalCnt" : 30,
+      "totalCnt" : 40,
       "serveyOneAvg" : 4.0,
       "serveyTwoAvg" : 4.5,
       "serveyThreeAvg" : 3.3,
-      "serveyFourAvg" : 3.5,
-      "serveyFiveAvg" : 3.7,
-      "totalAvg" : 3.8
+      "serveyFourAvg" : 3.8,
+      "serveyFiveAvg" : 4.0,
+      "totalAvg" : 3.9
     },
     "조동" : {
       "totalCnt" : 30,
@@ -1448,21 +1454,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 198
+Content-Length: 59
 
 {
   "message" : "전일 통계 데이터",
-  "data" : {
-    "15" : {
-      "WRMS" : 1,
-      "totalCnt" : 1
-    },
-    "16" : {
-      "WRMS" : 1,
-      "totalCnt" : 2,
-      "ILSANG" : 1
-    }
-  }
+  "data" : { }
 }</code></pre>
 </div>
 </div>

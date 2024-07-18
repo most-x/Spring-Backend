@@ -4,6 +4,7 @@ import kr.co.mostx.japi.exception.CustomException;
 import kr.co.mostx.japi.exception.ErrorCode;
 import kr.co.mostx.japi.response.ServeyErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class ServeyExceptionAdvice {
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ServeyErrorResponse> illegalArgumentExceptionAdvice(IllegalArgumentException e) {
         return ResponseEntity
