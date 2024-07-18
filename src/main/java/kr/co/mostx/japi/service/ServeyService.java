@@ -231,13 +231,13 @@ public class ServeyService {
         String decodedData = UriUtils.decode(elementData, StandardCharsets.UTF_8);
         DataObject decryptJson = AesUtil.aesCBCDecode(decodedData);
         String registStatus = this.findServeyNumber(decryptJson.getServeyNumber());
-        String onedayCheck = "N";
+//        String onedayCheck = "N";
+//
+//        if (LocalDateTime.now().isAfter(decryptJson.getMessageTime().plusHours(24))) {
+//            onedayCheck = "Y";
+//        }
 
-        if (LocalDateTime.now().isAfter(decryptJson.getMessageTime().plusHours(24))) {
-            onedayCheck = "Y";
-        }
-
-        return new ServeyCryptDto(decryptJson, registStatus, onedayCheck);
+        return new ServeyCryptDto(decryptJson, registStatus);
     }
 
 }

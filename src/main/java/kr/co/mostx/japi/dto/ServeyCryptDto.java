@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class ServeyCryptDto {
     private DataObject decryptData;
     private String registStatus;
-    private String onedayCheck;
+//    private String onedayCheck;
 }
