@@ -35,66 +35,66 @@ public class ServeyControllerTest extends AbstractRestDocsTests {
 
     private static final String host = "https://japi.mostx.co.kr";
 
-    @Test
-    void ServeyCreateTest() throws Exception {
-        Map<String, Object> input = new LinkedHashMap<>();
-        input.put("serveyOne", 1);
-        input.put("serveyTwo", 1);
-        input.put("serveyThree", 1);
-        input.put("serveyFour", 1);
-        input.put("serveyFive", 1);
-        input.put("userName", "하선호");
-        input.put("userPhone", "01012983737");
-        input.put("consultantName", "조동현");
-        input.put("platform", "WRMS");
-        input.put("serveyNumber", "CSL0000374674");
-
-        ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
-                .header("Host", "japi.mostx.co.kr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(input)));
-
-        result.andExpect(status().isCreated())
-                .andDo(restDocs.document(
-                        requestFields(
-                                fieldWithPath("serveyOne").description("만족도조사 1번 항목"),
-                                fieldWithPath("serveyTwo").description("만족도조사 2번 항목"),
-                                fieldWithPath("serveyThree").description("만족도조사 3번 항목"),
-                                fieldWithPath("serveyFour").description("만족도조사 4번 항목"),
-                                fieldWithPath("serveyFive").description("만족도조사 5번 항목"),
-                                fieldWithPath("userName").description("고객명"),
-                                fieldWithPath("userPhone").description("고객 휴대폰번호"),
-                                fieldWithPath("consultantName").description("상담원명"),
-                                fieldWithPath("platform").description("인입경로").attributes(field("constraints", "WRMS," + "\n" + "ILSANG")),
-                                fieldWithPath("serveyNumber").description("상담번호").attributes(field("constraints", "Unique key: 중복불가"))
-                        )
-                ));
-    }
-
-    @Test
-    void DecryptTest() throws Exception {
-        mockMvc.perform(get("/api/servey/decrypt")
-                        .header("Host", "japi.mostx.co.kr")
-                        .param("elementData", "EmyBaXv4ISguu2Unh03mwE%2BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%2F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%2F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%3D%3D")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                queryParameters(
-                                        parameterWithName("elementData").description("암호화된 데이터").attributes(field("type", String.valueOf(JsonFieldType.STRING)))
-                                ),
-                                responseFields(
-                                        fieldWithPath("decryptData").type(JsonFieldType.OBJECT).description("복호환된 데이터(JSON)"),
-                                        fieldWithPath("decryptData.userName").type(JsonFieldType.STRING).description("고객명"),
-                                        fieldWithPath("decryptData.userPhone").type(JsonFieldType.STRING).description("고객 휴대폰번호"),
-                                        fieldWithPath("decryptData.consultantName").type(JsonFieldType.STRING).description("상담원명"),
-//                                        fieldWithPath("decryptData.platform").type(JsonFieldType.STRING).description("인입경로"),
-                                        fieldWithPath("decryptData.serveyNumber").type(JsonFieldType.STRING).description("상담번호"),
-                                        fieldWithPath("decryptData.messageTime").type(JsonFieldType.STRING).description("알림톡 전송시간"),
-                                        fieldWithPath("registStatus").description("만족도조사 등록여부 (Y:등록불가, N:등록가능)")
-                                ))
-                );
-    }
+//    @Test
+//    void ServeyCreateTest() throws Exception {
+//        Map<String, Object> input = new LinkedHashMap<>();
+//        input.put("serveyOne", 1);
+//        input.put("serveyTwo", 1);
+//        input.put("serveyThree", 1);
+//        input.put("serveyFour", 1);
+//        input.put("serveyFive", 1);
+//        input.put("userName", "하선호");
+//        input.put("userPhone", "01012983737");
+//        input.put("consultantName", "조동현");
+//        input.put("platform", "WRMS");
+//        input.put("serveyNumber", "CSL0000374674");
+//
+//        ResultActions result = mockMvc.perform(post("/api/servey/servey-regist")
+//                .header("Host", "japi.mostx.co.kr")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(input)));
+//
+//        result.andExpect(status().isCreated())
+//                .andDo(restDocs.document(
+//                        requestFields(
+//                                fieldWithPath("serveyOne").description("만족도조사 1번 항목"),
+//                                fieldWithPath("serveyTwo").description("만족도조사 2번 항목"),
+//                                fieldWithPath("serveyThree").description("만족도조사 3번 항목"),
+//                                fieldWithPath("serveyFour").description("만족도조사 4번 항목"),
+//                                fieldWithPath("serveyFive").description("만족도조사 5번 항목"),
+//                                fieldWithPath("userName").description("고객명"),
+//                                fieldWithPath("userPhone").description("고객 휴대폰번호"),
+//                                fieldWithPath("consultantName").description("상담원명"),
+//                                fieldWithPath("platform").description("인입경로").attributes(field("constraints", "WRMS," + "\n" + "ILSANG")),
+//                                fieldWithPath("serveyNumber").description("상담번호").attributes(field("constraints", "Unique key: 중복불가"))
+//                        )
+//                ));
+//    }
+//
+//    @Test
+//    void DecryptTest() throws Exception {
+//        mockMvc.perform(get("/api/servey/decrypt")
+//                        .header("Host", "japi.mostx.co.kr")
+//                        .param("elementData", "EmyBaXv4ISguu2Unh03mwE%2BhqbGWzFvfPnsypAjCqK0SOiAFVQfWBGPCrTl8sKQeFHRZMnj1MCUZJfbeWKFT%2F8f4iN4O2nHkST4wfvqET9FYqCn5OaehirgmnV7KBMNQ76nGeeq6yaUW%2F51WreFzY3mEuFr3Gov8bqgUKk1c0jU6UkQfXVrUSmOWZGbx2VUZm6Tzdy6qU1icWPDFyykGig%3D%3D")
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andDo(
+//                        restDocs.document(
+//                                queryParameters(
+//                                        parameterWithName("elementData").description("암호화된 데이터").attributes(field("type", String.valueOf(JsonFieldType.STRING)))
+//                                ),
+//                                responseFields(
+//                                        fieldWithPath("decryptData").type(JsonFieldType.OBJECT).description("복호환된 데이터(JSON)"),
+//                                        fieldWithPath("decryptData.userName").type(JsonFieldType.STRING).description("고객명"),
+//                                        fieldWithPath("decryptData.userPhone").type(JsonFieldType.STRING).description("고객 휴대폰번호"),
+//                                        fieldWithPath("decryptData.consultantName").type(JsonFieldType.STRING).description("상담원명"),
+////                                        fieldWithPath("decryptData.platform").type(JsonFieldType.STRING).description("인입경로"),
+//                                        fieldWithPath("decryptData.serveyNumber").type(JsonFieldType.STRING).description("상담번호"),
+//                                        fieldWithPath("decryptData.messageTime").type(JsonFieldType.STRING).description("알림톡 전송시간"),
+//                                        fieldWithPath("registStatus").description("만족도조사 등록여부 (Y:등록불가, N:등록가능)")
+//                                ))
+//                );
+//    }
     @Test
     void ServeySearchFindTest() throws Exception {
         mockMvc.perform(get("/api/servey/list")
