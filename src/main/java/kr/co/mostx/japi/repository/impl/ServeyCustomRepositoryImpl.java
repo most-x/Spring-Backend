@@ -15,7 +15,6 @@ import kr.co.mostx.japi.response.ServeyResponse;
 import kr.co.mostx.japi.response.ServeyScoreResponse;
 import kr.co.mostx.japi.type.Platform;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static common.common.getBooleanExpression;
 import static kr.co.mostx.japi.entity.QServey.servey;
+import static kr.co.mostx.japi.entity.QServeyConsultant.serveyConsultant;
 
 @Repository
 @RequiredArgsConstructor
@@ -253,9 +253,13 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                         servey.serveyThree.avg(),
                         servey.serveyFour.avg(),
                         servey.serveyFive.avg(),
-                        servey.consultantName
+                        servey.consultantName,
+                        serveyConsultant.department,
+                        serveyConsultant.status
                 )
                 .from(servey)
+                .leftJoin(serveyConsultant)
+                .on(servey.consultantName.eq(serveyConsultant.consultant_name))
                 .groupBy(servey.consultantName)
                 .fetch();
 
@@ -265,6 +269,10 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                     servey.serveyOne, servey.serveyTwo, servey.serveyThree, servey.serveyFour, servey.serveyFive));
             Double[] averages = new Double[loopServeyList.length];
             String consultantName = result.get(servey.consultantName);
+            String department = result.get(serveyConsultant.department);
+            String status = result.get(serveyConsultant.status) != null ? result.get(serveyConsultant.status) : "-";
+            System.out.println("department = " + department);
+            System.out.println("status = " + status);
 
             // 질문 배열에 등록 시 자동으로 추가하여 average 계산되도록
             for (int i = 0; i < averages.length; i++) {
@@ -286,6 +294,8 @@ public class ServeyCustomRepositoryImpl implements ServeyCustomRepository {
                 resultMap.put(loopServeyList[i] + "Avg", averages[i]);
             }
             resultMap.put("totalAvg", totalAvg);
+            resultMap.put("department", department);
+            resultMap.put("status", status);
 
             consultMap.put(consultantName, resultMap);
         }
